@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, url_for
 import pymongo
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -16,7 +16,15 @@ papers_col = mydb["papers_ai"]
 # Routes
 @app.route("/")
 def home():
-    return "<h1>Hallo</h1>"
+    return "<h1>Home</h1>"
+
+@app.route("/search")
+def search():
+    return "<h1>Search here</h1>"
+
+@app.route("/help")
+def help():
+    return "<h1>Contact us</h1>"
 
 @app.route("/profile/<string:researcher_id>", methods=["GET"])
 def researcher(researcher_id):
@@ -24,14 +32,6 @@ def researcher(researcher_id):
     researcher_data = papers_col.find({
         "author_id": full_query_str
     }).sort("year", 1)
-
-    # Get number of citations
-    citation_data = [paper["citations"] for paper in researcher_data]
-    citation_counts = []
-    for paper_entry in citation_data:
-        num_citations_paper = (year_entry["cited_by_count"] for year_entry in paper_entry)
-        citation_this_paper = sum(num_citations_paper)
-        citation_counts.append(citation_this_paper)
 
     # Get title and year of all papers
     all_papers = []
@@ -45,6 +45,25 @@ def researcher(researcher_id):
 
     num_papers = len(all_papers)
 
+    researcher_data = papers_col.find({
+        "author_id": full_query_str
+    }).sort("year", 1)
+    # Get number of citations
+    citation_data = [paper["citations"] for paper in researcher_data]
+    citation_counts = []
+    all_years_list = []
+    for paper_entry in citation_data:
+        num_citations_paper = (year_entry["cited_by_count"] for year_entry in paper_entry)
+        citation_this_paper = sum(num_citations_paper)
+        citation_counts.append(citation_this_paper)
+        for year_entry in paper_entry:
+            all_years_list.append(year_entry["year"])
+
+    all_years_list = set(all_years_list)
+    all_years_list = list(all_years_list)
+    all_years_list.sort()
+
+
     # Get list of institutions 
     all_institutions = ["AAU Business School", "ESB Business School", "SDU Odense"]
     list_institutions = ", ".join(all_institutions)
@@ -57,7 +76,7 @@ def researcher(researcher_id):
         "total_cits": sum(citation_counts)
     }
 
-    return render_template("profile.html", num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats)
+    return render_template("profile.html", num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_years_list=all_years_list)
 
 
 if __name__ == "__main__":

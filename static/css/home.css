@@ -163,6 +163,10 @@ h3 {
     display: block;
     height: 4rem;
     margin-bottom: 1rem;
+    text-align: center;
+}
+.menu-link svg {
+    margin: 1rem 0;
 }
 
 
