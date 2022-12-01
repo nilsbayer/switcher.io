@@ -4,10 +4,224 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/home.css">
     <title>Document</title>
 </head>
 <body>
-    <h1>Switcher.io</h1>
-    <p>{{ papers }}</p>
+    <section class="sidebar"> 
+        <div class="ham-menu">
+            <div class="ham"></div>
+            <div class="ham"></div>
+            <div class="ham"></div>
+        </div>
+    </section>
+    <main>
+        <h1>Roman Jurowetzki</h1>
+        <div class="box">
+            <div class="personal-info">
+                <div class="personal-stats">
+                    <span>Current institution:</span>
+                    <span>AAU Business School</span>
+                    <span>Total citations:</span>
+                    <span>4,006</span>
+                    <span>Estimated location:</span>
+                    <span>Denmark</span>
+                    <span>Associated institutions:</span>
+                    <span>AAU Business School, Chinese University, MIT Loan</span>
+                </div>
+                <img class="profile-pic" src="../static/img/proifle.webp" alt="">
+            </div>
+        </div>
+
+        <div class="box">
+            <h3>Citations per year</h3>
+            <div class="citations">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <div class="box">
+            <h3>Network of Roman Jurowetzki</h3>
+            <div class="shadow-box">
+                <div class="network-container">
+                    <div id="mynetwork" class="card-body"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box">
+            <h3>Papers by Roman Jurowetzki</h3>
+            <div class="shadow-box paper-entry">
+                <span class="paper-name">Transformer models for autonomous driving</span>
+                <span class="paper-year">2020</span>
+                <a class="paper-link" href="#">
+                    <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_3_28)">
+                        <path d="M14.375 0C13.5799 0 12.9375 0.642383 12.9375 1.4375C12.9375 2.23262 13.5799 2.875 14.375 2.875H18.09L9.04727 11.9223C8.48574 12.4838 8.48574 13.3957 9.04727 13.9572C9.60879 14.5188 10.5207 14.5188 11.0822 13.9572L20.125 4.90996V8.625C20.125 9.42012 20.7674 10.0625 21.5625 10.0625C22.3576 10.0625 23 9.42012 23 8.625V1.4375C23 0.642383 22.3576 0 21.5625 0H14.375ZM3.59375 1.4375C1.6082 1.4375 0 3.0457 0 5.03125V19.4062C0 21.3918 1.6082 23 3.59375 23H17.9688C19.9543 23 21.5625 21.3918 21.5625 19.4062V14.375C21.5625 13.5799 20.9201 12.9375 20.125 12.9375C19.3299 12.9375 18.6875 13.5799 18.6875 14.375V19.4062C18.6875 19.8016 18.3641 20.125 17.9688 20.125H3.59375C3.19844 20.125 2.875 19.8016 2.875 19.4062V5.03125C2.875 4.63594 3.19844 4.3125 3.59375 4.3125H8.625C9.42012 4.3125 10.0625 3.67012 10.0625 2.875C10.0625 2.07988 9.42012 1.4375 8.625 1.4375H3.59375Z" fill="black"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_3_28">
+                        <rect width="23" height="23" fill="white"/>
+                        </clipPath>
+                        </defs>
+                    </svg>    
+                </a>
+            </div>
+            <div class="shadow-box paper-entry">
+                <span class="paper-name">Transformer models for autonomous driving</span>
+                <span class="paper-year">2020</span>
+                <a class="paper-link" href="#">
+                    <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_3_28)">
+                        <path d="M14.375 0C13.5799 0 12.9375 0.642383 12.9375 1.4375C12.9375 2.23262 13.5799 2.875 14.375 2.875H18.09L9.04727 11.9223C8.48574 12.4838 8.48574 13.3957 9.04727 13.9572C9.60879 14.5188 10.5207 14.5188 11.0822 13.9572L20.125 4.90996V8.625C20.125 9.42012 20.7674 10.0625 21.5625 10.0625C22.3576 10.0625 23 9.42012 23 8.625V1.4375C23 0.642383 22.3576 0 21.5625 0H14.375ZM3.59375 1.4375C1.6082 1.4375 0 3.0457 0 5.03125V19.4062C0 21.3918 1.6082 23 3.59375 23H17.9688C19.9543 23 21.5625 21.3918 21.5625 19.4062V14.375C21.5625 13.5799 20.9201 12.9375 20.125 12.9375C19.3299 12.9375 18.6875 13.5799 18.6875 14.375V19.4062C18.6875 19.8016 18.3641 20.125 17.9688 20.125H3.59375C3.19844 20.125 2.875 19.8016 2.875 19.4062V5.03125C2.875 4.63594 3.19844 4.3125 3.59375 4.3125H8.625C9.42012 4.3125 10.0625 3.67012 10.0625 2.875C10.0625 2.07988 9.42012 1.4375 8.625 1.4375H3.59375Z" fill="black"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_3_28">
+                        <rect width="23" height="23" fill="white"/>
+                        </clipPath>
+                        </defs>
+                    </svg> 
+                </a>
+            </div>
+            <div class="shadow-box paper-entry">
+                <span class="paper-name">Transformer models for autonomous driving</span>
+                <span class="paper-year">2020</span>
+                <a class="paper-link" href="#">
+                    <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_3_28)">
+                        <path d="M14.375 0C13.5799 0 12.9375 0.642383 12.9375 1.4375C12.9375 2.23262 13.5799 2.875 14.375 2.875H18.09L9.04727 11.9223C8.48574 12.4838 8.48574 13.3957 9.04727 13.9572C9.60879 14.5188 10.5207 14.5188 11.0822 13.9572L20.125 4.90996V8.625C20.125 9.42012 20.7674 10.0625 21.5625 10.0625C22.3576 10.0625 23 9.42012 23 8.625V1.4375C23 0.642383 22.3576 0 21.5625 0H14.375ZM3.59375 1.4375C1.6082 1.4375 0 3.0457 0 5.03125V19.4062C0 21.3918 1.6082 23 3.59375 23H17.9688C19.9543 23 21.5625 21.3918 21.5625 19.4062V14.375C21.5625 13.5799 20.9201 12.9375 20.125 12.9375C19.3299 12.9375 18.6875 13.5799 18.6875 14.375V19.4062C18.6875 19.8016 18.3641 20.125 17.9688 20.125H3.59375C3.19844 20.125 2.875 19.8016 2.875 19.4062V5.03125C2.875 4.63594 3.19844 4.3125 3.59375 4.3125H8.625C9.42012 4.3125 10.0625 3.67012 10.0625 2.875C10.0625 2.07988 9.42012 1.4375 8.625 1.4375H3.59375Z" fill="black"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_3_28">
+                        <rect width="23" height="23" fill="white"/>
+                        </clipPath>
+                        </defs>
+                    </svg> 
+                </a>
+            </div>
+        </div>
+
+        <div class="box">
+            <h3>Get in touch</h3>
+            <div class="shadow-box contact-form">
+                <textarea class="email-text" name="" id="" cols="90" rows="12">
+Dear Mr. Jurowetzki,
+
+I have read your paper on “Transformer models for autonomous driving”.
+Very great work!
+
+We want you in our company!
+
+Best regards,
+John Doe
+                </textarea>
+                <button class="primary-btn">Send email</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const ctx = document.getElementById('myChart');
+    
+        new Chart(ctx, {
+            data: {
+                datasets: [
+                    {   
+                        type: 'line',
+                        label: 'Average citations',
+                        data: [11, 11, 12, 15],
+                        borderColor: '#c4c4c4',
+                        backgroundColor: '#c4c4c4'
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Number of citations',
+                        data: [10, 17, 18, 23],
+                        borderColor: '#23B08F',
+                        backgroundColor: '#23B08F'
+                    }
+                ],
+                labels: [2019, 2020, 2021, 2022]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // initialize global variables.
+        var edges;
+        var nodes;
+        var allNodes;
+        var allEdges;
+        var nodeColors;
+        var originalNodes;
+        var network;
+        var container;
+        var options, data;
+        var filter = {
+            item : '',
+            property : '',
+            value : []
+        };
+        // This method is responsible for drawing the graph, returns the drawn network
+        function drawGraph() {
+            var container = document.getElementById('mynetwork');
+            // parsing and collecting nodes and edges from the python
+            nodes = new vis.DataSet([{"color": "#23B08F", "id": "asd34", "label": "Roman", "shape": "square", "size": 10}, {"color": "#c4c4c4", "id": "2", "label": "Daniel", "shape": "dot", "size": 10}, {"color": "#c4c4c4", "id": "3", "label": "Hamid", "shape": "dot", "size": 10}, {"color": "#c4c4c4", "id": "4", "label": "Ivan", "shape": "dot", "size": 10}]);
+            edges = new vis.DataSet([{"from": "asd34", "to": "2", "width": 1}, {"from": "asd34", "to": "3", "width": 1}, {"from": "asd34", "to": "4", "width": 1}, {"from": "4", "to": "3", "width": 1}]);
+
+            nodeColors = {};
+            allNodes = nodes.get({ returnType: "Object" });
+            for (nodeId in allNodes) {
+            nodeColors[nodeId] = allNodes[nodeId].color;
+            }
+            allEdges = edges.get({ returnType: "Object" });
+            // adding nodes and edges to the graph
+            data = {nodes: nodes, edges: edges};
+
+            var options = {
+                "configure": {
+                "enabled": false
+                },
+                "edges": {
+                "color": {
+                    "inherit": true
+                },
+                "smooth": {
+                    "enabled": true,
+                    "type": "dynamic"
+                }
+                },
+                "interaction": {
+                "dragNodes": true,
+                "hideEdgesOnDrag": false,
+                "hideNodesOnDrag": false
+                },
+                "physics": {
+                "enabled": true,
+                "stabilization": {
+                    "enabled": true,
+                    "fit": true,
+                    "iterations": 1000,
+                    "onlyDynamicEdges": false,
+                    "updateInterval": 50
+                }
+                }
+                };
+            network = new vis.Network(container, data, options);
+            return network;
+        }
+        drawGraph();
+    </script>
 </body>
 </html>

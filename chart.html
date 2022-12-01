@@ -1,0 +1,33 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<canvas id="myChart"></canvas>
+
+<script>
+    const ctx = document.getElementById('myChart');
+
+
+    new Chart(ctx, {
+        data: {
+            datasets: [
+                {
+                    type: 'bar',
+                    label: 'Number of citations',
+                    data: [10, 17, 18, 23]
+                }, 
+                {
+                    type: 'line',
+                    label: 'Average citations',
+                    data: [11, 11, 12, 15],
+                }
+            ],
+            labels: [2019, 2020, 2021, 2022]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>

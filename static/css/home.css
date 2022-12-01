@@ -1,0 +1,244 @@
+html {
+    font-size: 1.1rem;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    --accent-color: #23B08F; 
+    --dark-green: #145243; 
+    --hover: #179a7b;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+}
+
+.sidebar {
+    width: 10vw;
+    height: 100vh;
+    background-color: var(--dark-green);
+    position: fixed;
+}
+
+.ham-menu {
+    display: none;
+}
+
+main {
+    width: 88vw;
+    margin-left: 10vw;
+    height: fit-content;
+    padding: 4rem 8rem;
+    background-color: white;
+}
+
+.box {
+    margin-bottom: 4rem;
+}
+
+.shadow-box {
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+h1 {
+    margin-bottom: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.personal-info {
+    display: flex;
+    gap: 6rem;
+}
+
+.personal-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 4rem;
+    row-gap: 1rem;
+}
+
+.profile-pic {
+    width:10rem;
+}
+
+.paper-entry {
+    padding: 1rem;
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.paper-name {
+    display: inline-block;
+    width: 60%;
+    overflow-x: hidden;
+}
+
+.paper-year {
+    display: inline-block;
+    width: 10%;
+    color: var(--accent-color);
+}
+
+.paper-link {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    margin-right: 1rem;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.email-text {
+    margin: 2rem auto 1rem 5%;
+    resize: none;
+    width: 90%;
+    border: none;
+    font-size: 1rem;
+}
+
+.email-text:focus {
+    outline: none;
+}
+
+.primary-btn {
+    background-color: var(--accent-color);
+    color: white;
+    margin: 0 0 2rem 5%;
+    border-radius: 10px;
+    border: none;
+    font-size: 1.1rem;
+    width: fit-content;
+    padding: 0 1.2rem;
+    height: 3rem;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.primary-btn:hover {
+    background-color: var(--hover);
+}
+
+.span-btn {
+    display: inline-block;
+    line-height: 3rem;
+}
+
+.network-container {
+    padding: 1rem;
+    height: 24rem;
+}
+
+#mynetwork {
+    display: block;
+    height: 20rem;
+    width: 100%;
+    background-color: #ffffff;
+    position: relative;
+    float: left;
+}
+
+.citations {
+    width: 80%;
+}
+
+.more-papers {
+    height: 0;
+    overflow-y: hidden;
+    transition: height 1s;
+}
+
+.menu-link {
+    display: block;
+    height: 4rem;
+    margin-bottom: 1rem;
+}
+
+
+/* Adapting for small screens */
+
+@media only screen and (max-width:800px) {
+
+    html {
+        font-size: .8rem;
+    }
+
+    body {
+        display: block;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100vw;
+        height: 8vh;
+        background-color: white;
+        margin-top: 2rem;
+    }
+
+    .ham-menu {
+        display: block;
+        positioN: absolute;
+        right: 2rem;
+    }
+
+    .ham {
+        width: 15vw;
+        height: .5rem;
+        background-color: var(--dark-green);
+        margin-bottom: .5rem;
+    }
+
+    main {
+        padding: 2rem;
+    }
+
+    .personal-info {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 2rem;
+    }
+
+    .personal-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: .5rem; 
+        row-gap: 1rem;
+    }
+
+    .profile-pic {
+        width: 8rem;
+    }
+    
+    .shadow-box {
+        border-radius: 5px;
+    }
+
+    .paper-name {
+        display: block;
+    }
+    
+    .paper-year {
+        display: block;
+    }
+    
+    .paper-link {
+        display: block;
+        bottom: 25%;
+    }
+
+    .citations {
+        width: 100%;
+    }
+
+}
