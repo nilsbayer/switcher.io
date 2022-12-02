@@ -98,7 +98,7 @@
                 <h3>Get in touch</h3>
                 <div class="shadow-box contact-form">
                     <textarea class="email-text" name="" id="" cols="90" rows="12">
-Dear Mr. Jurowetzki,
+Dear Mrs./Mr. {{ personal_info.author_surname }},
 
 I have read your paper on “Transformer models for autonomous driving”.
 Very great work!
@@ -146,14 +146,14 @@ John Doe
                         {   
                             type: 'line',
                             label: 'Average citations',
-                            data: [11, 11, 12, 15],
+                            data: {{ average_citations }},
                             borderColor: '#c4c4c4',
                             backgroundColor: '#c4c4c4'
                         },
                         {
                             type: 'bar',
                             label: 'Number of citations',
-                            data: [10, 17, 18, 23],
+                            data: {{ all_citation_counts }},
                             borderColor: '#23B08F',
                             backgroundColor: '#23B08F'
                         }
