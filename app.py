@@ -75,7 +75,6 @@ def researcher(researcher_id):
     }
 
     average_citations = [average_citations.get(str(y)) for y in all_citation_years]
-    print(average_citations)
 
     researcher_data = papers_col.find({
         "author_id": full_query_str
@@ -140,7 +139,44 @@ def researcher(researcher_id):
         "total_cits": sum(citation_counts)
     }
 
-    res = make_response(render_template("profile.html", profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
+    # Get data prepared for the network visualization
+    all_papers_list = papers_col.distinct("paper_id", {"author_id": full_query_str})
+    coauthor_list = papers_col.distinct("author_id",{
+        "paper_id": { "$in": all_papers_list}
+    })
+    coauthor_list.remove(full_query_str)
+    length_coauthor = len(coauthor_list)
+    coauthor_list = [coauthor.replace("https://openalex.org/", "") for coauthor in coauthor_list]
+    node_list = [{
+        "color": "#23B08F",
+        "id": researcher_id,
+        "label": authors_name,
+        "shape": "square",
+        "size": 10
+    }]
+    edge_list = []
+    for coauthor in coauthor_list:
+        r = requests.get(f"https://api.openalex.org/people/{coauthor}")
+        coauthor_name = r.json()["display_name"]
+        node = {
+            "color": "#c4c4c4",
+            "id": coauthor,
+            "label": coauthor_name,
+            "shape": "dot",
+            "size": 10
+        }
+        node_list.append(node)
+        edge = {
+            "from": researcher_id,  
+            "to": coauthor,  
+            "width": 1,  
+        }
+        edge_list.append(edge)
+
+    print(node_list)
+    print("*********************")
+    print(edge_list)
+    res = make_response(render_template("profile.html", node_list=json.dumps(node_list), edge_list=json.dumps(edge_list), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
     this_researcher = {
         "token": researcher_id,
         "name": authors_name,
