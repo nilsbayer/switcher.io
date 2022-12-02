@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, url_for
+from flask import Flask, render_template, jsonify, request, url_for, abort
 import pymongo
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -29,6 +29,10 @@ def help():
 @app.route("/profile/<string:researcher_id>", methods=["GET"])
 def researcher(researcher_id):
     full_query_str = f"https://openalex.org/{researcher_id}"
+
+    if papers_col.count_documents({ "author_id": full_query_str }) < 1:
+        return render_template("profile.html", profile_exists=False)
+
     researcher_data = papers_col.find({
         "author_id": full_query_str
     }).sort("year", 1)
@@ -59,6 +63,10 @@ def researcher(researcher_id):
         for year_entry in paper_entry:
             all_years_list.append(year_entry["year"])
 
+    # Dictionary of years and citations
+    
+
+    #  List of years for x axis
     all_years_list = set(all_years_list)
     all_years_list = list(all_years_list)
     all_years_list.sort()
@@ -76,7 +84,7 @@ def researcher(researcher_id):
         "total_cits": sum(citation_counts)
     }
 
-    return render_template("profile.html", num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_years_list=all_years_list)
+    return render_template("profile.html", profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_years_list=all_years_list)
 
 
 if __name__ == "__main__":

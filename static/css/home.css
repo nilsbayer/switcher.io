@@ -18,7 +18,7 @@ body {
 }
 
 .sidebar {
-    width: 10vw;
+    width: 7.5vw;
     height: 100vh;
     background-color: var(--dark-green);
     position: fixed;
@@ -243,6 +243,15 @@ h3 {
 
     .citations {
         width: 100%;
+    }
+
+}
+
+
+@media only screen and (min-width:1300px) {
+
+    .sidebar {
+        width: 5vw;
     }
 
 }
