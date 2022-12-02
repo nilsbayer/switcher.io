@@ -18,7 +18,13 @@ papers_col = mydb["papers_ai"]
 # Routes
 @app.route("/")
 def home():
-    return "<h1>Home</h1>"
+    prior_researcher_list = request.cookies.get("prior_researchers")
+    if prior_researcher_list == None:
+        prior_researcher_list = None
+    else:
+        prior_researcher_list = json.loads(prior_researcher_list) 
+
+    return render_template("index.html", prior_researcher_list=prior_researcher_list)
 
 @app.route("/search")
 def search():
@@ -89,6 +95,7 @@ def researcher(researcher_id):
     res = make_response(render_template("profile.html", profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_years_list=all_years_list))
     this_researcher = {
         "token": researcher_id,
+        "name": researcher_id,
         "date": date.today().strftime("%d.%m.%Y")
     }
     prior_researcher_list = request.cookies.get("prior_researchers")
