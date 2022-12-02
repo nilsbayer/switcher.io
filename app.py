@@ -1,7 +1,9 @@
-from flask import Flask, render_template, jsonify, request, url_for, abort
+from flask import Flask, render_template, jsonify, request, url_for, abort, make_response
 import pymongo
 import os
 from dotenv import load_dotenv, find_dotenv
+from datetime import date
+import json
 
 app = Flask(__name__)
 
@@ -84,7 +86,24 @@ def researcher(researcher_id):
         "total_cits": sum(citation_counts)
     }
 
-    return render_template("profile.html", profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_years_list=all_years_list)
+    res = make_response(render_template("profile.html", profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_years_list=all_years_list))
+    this_researcher = {
+        "token": researcher_id,
+        "date": date.today().strftime("%d.%m.%Y")
+    }
+    prior_researcher_list = request.cookies.get("prior_researchers")
+    if prior_researcher_list == None:
+        prior_researcher_list = []
+    else:
+        prior_researcher_list = json.loads(prior_researcher_list)
+        for saved_researcher in prior_researcher_list:
+            saved_token = saved_researcher.get("token")
+            if researcher_id == saved_token:
+                return res
+    prior_researcher_list.append(this_researcher)
+    res.set_cookie("prior_researchers", json.dumps(prior_researcher_list))
+
+    return res
 
 
 if __name__ == "__main__":
