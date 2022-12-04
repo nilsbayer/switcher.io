@@ -7,6 +7,8 @@ import json
 import requests
 import asyncio
 import time
+from time import perf_counter
+import math
 
 app = Flask(__name__)
 
@@ -39,6 +41,7 @@ def help():
 
 @app.route("/profile/<string:researcher_id>", methods=["GET"])
 def researcher(researcher_id):
+    start_time = perf_counter()
     full_query_str = f"https://openalex.org/{researcher_id}"
 
     if papers_col.count_documents({ "author_id": full_query_str }) < 1:
@@ -164,15 +167,7 @@ def researcher(researcher_id):
         return author_data.get("display_name")
 
     async def get_nodes_and_edges(coauthor_name_id, researcher_id):
-        node_list = [
-            {
-                "color": "#23B08F",
-                "id": researcher_id,
-                "label": authors_name,
-                "shape": "square",
-                "size": 10
-            }
-        ]
+        node_list = []
         edge_list = []
         for coauthor in list(coauthor_name_id):
             node = {
@@ -198,13 +193,32 @@ def researcher(researcher_id):
         node_list, edge_list = await get_nodes_and_edges(coauthor_name_id, researcher_id)
         return node_list, edge_list
 
-    node_list, edge_list = asyncio.run(main(coauthor_list))
+    first_node = {
+        "color": "#23B08F",
+        "id": researcher_id,
+        "label": authors_name,
+        "shape": "square",
+        "size": 10
+    }
+    nodes = []
+    edges = []
+
+    if length_coauthor > 6:
+        for i in range(math.ceil(length_coauthor / 6)):
+            current_coauthor_list =  coauthor_list[:6]
+            del coauthor_list[:6]
+            node_list, edge_list = asyncio.run(main(current_coauthor_list))
+            for node_list_item in node_list: nodes.append(node_list_item) 
+            for edge_list_item in edge_list: edges.append(edge_list_item)
+            time.sleep(1)
+    else:
+        nodes, edges = asyncio.run(main(coauthor_list))
+
+    nodes.append(first_node)
+    nodes = list(reversed(nodes))
     # ASYNC ENDE
 
-    print(node_list)
-    print("*********************")
-    print(edge_list)
-    res = make_response(render_template("profile.html", node_list=json.dumps(node_list), edge_list=json.dumps(edge_list), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
+    res = make_response(render_template("profile.html", node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
     this_researcher = {
         "token": researcher_id,
         "name": authors_name,
@@ -222,6 +236,7 @@ def researcher(researcher_id):
     prior_researcher_list.append(this_researcher)
     res.set_cookie("prior_researchers", json.dumps(prior_researcher_list))
 
+    print(f"*********** Load time: {perf_counter() - start_time} *****************")
     return res
 
 

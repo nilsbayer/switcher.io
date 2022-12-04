@@ -53,6 +53,6 @@ async def main(coauthors):
 authors_name = "Herr Anfang"
 researcher_id = "ABCDE"
 
-coauthors = ["A2164292938", "A2499063207", "A2119543935", "A2200192130", "A2164292938", "A2499063207", "A2119543935", "A2200192130"]
+coauthors = ["A2164292938", "A2499063207", "A2119543935", "A2200192130"]
 
 node_list, edge_list = asyncio.run(main(coauthors))
