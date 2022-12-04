@@ -5,6 +5,8 @@ from dotenv import load_dotenv, find_dotenv
 from datetime import date
 import json
 import requests
+import asyncio
+import time
 
 app = Flask(__name__)
 
@@ -147,31 +149,57 @@ def researcher(researcher_id):
     coauthor_list.remove(full_query_str)
     length_coauthor = len(coauthor_list)
     coauthor_list = [coauthor.replace("https://openalex.org/", "") for coauthor in coauthor_list]
-    node_list = [{
-        "color": "#23B08F",
-        "id": researcher_id,
-        "label": authors_name,
-        "shape": "square",
-        "size": 10
-    }]
-    edge_list = []
-    for coauthor in coauthor_list:
-        r = requests.get(f"https://api.openalex.org/people/{coauthor}")
-        coauthor_name = r.json()["display_name"]
-        node = {
-            "color": "#c4c4c4",
-            "id": coauthor,
-            "label": coauthor_name,
-            "shape": "dot",
-            "size": 10
-        }
-        node_list.append(node)
-        edge = {
-            "from": researcher_id,  
-            "to": coauthor,  
-            "width": 1,  
-        }
-        edge_list.append(edge)
+   
+    # ASYNC
+    def get_request(url):
+        r = requests.get(url)
+        return r.json()
+
+    async def asyncr_get_req(url):
+        return await asyncio.to_thread(get_request, url)
+
+    async def get_coauthor_names(coauthor):
+        url = f"https://api.openalex.org/people/{coauthor}"
+        author_data = await asyncr_get_req(url)
+        return author_data.get("display_name")
+
+    async def get_nodes_and_edges(coauthor_name_id, researcher_id):
+        node_list = [
+            {
+                "color": "#23B08F",
+                "id": researcher_id,
+                "label": authors_name,
+                "shape": "square",
+                "size": 10
+            }
+        ]
+        edge_list = []
+        for coauthor in list(coauthor_name_id):
+            node = {
+                "color": "#c4c4c4",
+                "id": coauthor[1],
+                "label": coauthor[0],
+                "shape": "dot",
+                "size": 10
+            }
+            node_list.append(node)
+            edge = {
+                "from": researcher_id,  
+                "to": coauthor[1],  
+                "width": 1,  
+            }
+            edge_list.append(edge)
+        return node_list, edge_list
+
+    # running the functions
+    async def main(coauthors):
+        author_names = await asyncio.gather(*[get_coauthor_names(coauthor) for coauthor in coauthors])
+        coauthor_name_id = zip(author_names, coauthors)
+        node_list, edge_list = await get_nodes_and_edges(coauthor_name_id, researcher_id)
+        return node_list, edge_list
+
+    node_list, edge_list = asyncio.run(main(coauthor_list))
+    # ASYNC ENDE
 
     print(node_list)
     print("*********************")
