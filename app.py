@@ -124,7 +124,8 @@ def researcher(researcher_id):
             "year": entry["year"][:4],
             "link": entry["paper_id"]
         }
-        all_papers.append(paper_info)
+        if paper_info not in all_papers:
+            all_papers.append(paper_info)
 
     num_papers = len(all_papers)
 
