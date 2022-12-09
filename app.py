@@ -12,8 +12,12 @@ import math
 
 app = Flask(__name__)
 
-# Database
 load_dotenv(find_dotenv())
+app.config['SECRET_KEY'] = os.getenv("APP_PWD")
+
+from forms import SearchForm
+
+# Database
 MONGO_PWD = os.getenv("MONGO_PWD")
 
 myclient = pymongo.MongoClient(f"mongodb+srv://mar_ai:{MONGO_PWD}@cluster0.h3jd8u4.mongodb.net/?retryWrites=true&w=majority")
@@ -31,9 +35,35 @@ def home():
 
     return render_template("index.html", prior_researcher_list=list(reversed(prior_researcher_list)))
 
-@app.route("/search")
+@app.route("/search", methods=["GET", "POST"])
 def search():
-    return render_template("search.html")
+    form = SearchForm()
+    if form.validate_on_submit():
+        # add machine learning model here
+        authors_list_from_model = [
+            {
+                "name": "Roman Jurowetzki",
+                "prob_score": "98%",
+                "link": "A2164292938"
+            },
+            {
+                "name": "Yasmine Sarraj",
+                "prob_score": "98%",
+                "link": "A2160074034"
+            }
+        ]
+        form.institution.choices = [form.institution.data]
+        dropouts_numbers = [3, 5, 5, 7]
+        dropouts_years = [2017, 2018, 2019, 2020]
+
+        return render_template("search.html", search_results=authors_list_from_model, form=form, dropout_numbers=dropouts_numbers, dropout_years=dropouts_years)
+    
+    else:
+        print(form.errors)
+        # Get all institutions
+        form.institution.choices = ["A", "B", "C"]
+        
+        return render_template("search.html", form=form)
 
 @app.route("/help")
 def help():
@@ -238,6 +268,7 @@ def researcher(researcher_id):
 
     print(f"*********** Load time: {perf_counter() - start_time} *****************")
     return res
+
 
 
 if __name__ == "__main__":

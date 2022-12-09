@@ -169,6 +169,24 @@ h3 {
     margin: 1rem 0;
 }
 
+/* Forms */
+select {
+    border: none;
+    padding: .5rem;
+    font-size: 1rem;
+}
+select:focus {
+    outline: none;
+}
+.select-container {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+}
+
+#search_btn {
+    margin:  1rem 0 1rem 0;
+}
+
 
 /* Adapting for small screens */
 
@@ -243,6 +261,10 @@ h3 {
 
     .citations {
         width: 100%;
+    }
+
+    select {
+        font-size: .8rem;
     }
 
 }
