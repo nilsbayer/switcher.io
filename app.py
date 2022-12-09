@@ -29,11 +29,11 @@ papers_col = mydb["papers_ai"]
 def home():
     prior_researcher_list = request.cookies.get("prior_researchers")
     if prior_researcher_list == None:
-        prior_researcher_list = None
+        return render_template("index.html")
     else:
         prior_researcher_list = json.loads(prior_researcher_list) 
-
-    return render_template("index.html", prior_researcher_list=list(reversed(prior_researcher_list)))
+        return render_template("index.html", prior_researcher_list=list(reversed(prior_researcher_list)))
+    
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
