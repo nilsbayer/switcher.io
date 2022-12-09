@@ -40,6 +40,7 @@ def search():
     form = SearchForm()
     if form.validate_on_submit():
         # add machine learning model here
+        # model =
         authors_list_from_model = [
             {
                 "name": "Roman Jurowetzki",
