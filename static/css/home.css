@@ -229,6 +229,7 @@ select:focus {
         width: 99%;
         padding: 2rem;
         margin-left: .5%;
+        margin-top: 4rem;
     }
 
     .personal-info {
