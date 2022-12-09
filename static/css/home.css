@@ -36,6 +36,12 @@ main {
     background-color: white;
 }
 
+.switcher-title {
+    display: block;
+    height: 6rem;
+    color:white
+}
+
 .box {
     margin-bottom: 4rem;
 }
@@ -205,24 +211,23 @@ select:focus {
         width: 100vw;
         height: 8vh;
         background-color: white;
-        margin-top: 2rem;
+        margin-bottom: 1rem;
     }
 
-    .ham-menu {
-        display: block;
-        positioN: absolute;
-        right: 2rem;
-    }
-
-    .ham {
-        width: 15vw;
-        height: .5rem;
+    ul {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
         background-color: var(--dark-green);
-        margin-bottom: .5rem;
+    }
+
+    .switcher-title {
+        display: none;
     }
 
     main {
+        width: 99%;
         padding: 2rem;
+        margin-left: .5%;
     }
 
     .personal-info {
