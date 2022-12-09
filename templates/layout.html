@@ -14,8 +14,8 @@
     {% endblock title %}
 </head>
 <body>
-    <section class="sidebar"> 
-        <span style="display: block; height:6rem; color:white" href="">switcher.io</span>
+    <section class="sidebar">
+        <span class="switcher-title" href="">switcher.io</span>
         <ul>
             <a href="{{ url_for('home') }}" class="menu-link">
                 <svg width="40" height="35" viewBox="0 0 60 54" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -57,5 +57,16 @@
     </section>
     {% block content %}
     {% endblock content %}
+    <!-- <script>
+        const ul_bck = document.querySelector("ul")
+        if (screen.width < 800) {
+            document.querySelector(".ham-menu").addEventListener("click", () => {
+
+                ul_bck.style.display = "block"
+                ul_bck.style.backgroundColor = "black"
+
+            })
+        }
+    </script> -->
 </body>
 </html>
