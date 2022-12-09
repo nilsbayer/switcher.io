@@ -1,6 +1,0 @@
-# import math
-
-# print(math.ceil(7 / 6))
-
-my_list = [{'color': '#23B08F', 'id': 'A2147096036', 'label': 'Simon Anders', 'shape': 'square', 'size': 10}, {'color': '#c4c4c4', 'id': 'A808621600', 'label': 'Sarah A. Teichmann', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A258609416', 'label': 'John C. Marioni', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A2514924063', 'label': 'Michael I. Love', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A2233031296', 'label': 'Xiuwei Zhang', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A2166224350', 'label': 'Wolfgang Huber', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A2112563698', 'label': 'Jong Kyoung Kim', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A2086996270', 'label': 'Bianka Baying', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A2061154330', 'label': 'Vladimir Benes', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A2052198071', 'label': 'Valentina Proserpio', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A1987281190', 'label': 'Philip Brennecke', 'shape': 'dot', 'size': 10}, {'color': '#c4c4c4', 'id': 'A1972852212', 'label': 'Aleksandra A. Kolodziejczyk', 'shape': 'dot', 'size': 10}]
-print(len(my_list))
