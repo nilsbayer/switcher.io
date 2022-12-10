@@ -53,7 +53,6 @@ def search():
                 "link": "A2160074034"
             }
         ]
-        form.institution.choices = [form.institution.data]
         dropouts_numbers = [3, 5, 5, 7]
         dropouts_years = [2017, 2018, 2019, 2020]
 
@@ -61,9 +60,6 @@ def search():
     
     else:
         print(form.errors)
-        # Get all institutions
-        form.institution.choices = ["A", "B", "C"]
-        
         return render_template("search.html", form=form)
 
 @app.route("/help")
