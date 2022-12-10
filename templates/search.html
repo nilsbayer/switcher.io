@@ -22,12 +22,16 @@
         </div>
         {% if search_results %}
             <div class="box">
-                <h3>Dropouts in this institution</h3>
-                <div class="shadow-box" style="padding: 2rem;">
-                    <div class="citations">
-                        <canvas id="myChart"></canvas>
+                {% if len_dropouts != 0 %}
+                    <h3>Dropouts in this institution</h3>
+                    <div class="shadow-box" style="padding: 2rem;">
+                        <div class="citations">
+                            <canvas id="myChart"></canvas>
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <h3>There are no dropouts at this institution.</h3>
+                {% endif %}
             </div>
             <div class="box">
                 <h3>Likely future dropouts:</h3>
