@@ -9,6 +9,8 @@ import asyncio
 import time
 from time import perf_counter
 import math
+import pickle
+from collections import Counter
 
 app = Flask(__name__)
 
@@ -39,8 +41,31 @@ def home():
 def search():
     form = SearchForm()
     if form.validate_on_submit():
+        chosen_inst = form.institution.data
+
+        this_inst_entries = papers_col.find({
+            "institution_name": chosen_inst,
+            "dropout_year": {"$exists": True}
+        })
+        dropouts = []
+        for entry in this_inst_entries:
+            entry_ = {
+                "author": entry["author_id"],
+                "dropout_year": entry["dropout_year"]
+            }
+            if entry_ not in dropouts:
+                dropouts.append(entry_)
+
+        years = [year_entry["dropout_year"] for year_entry in dropouts]
+        years_counted = Counter(years)
+        years_counted = dict(sorted(years_counted.items()))
+
+        # Get the dropout numbers for the institution
+        dropouts_numbers = [num for num in years_counted.values()]
+        dropouts_years = [int(num) for num in years_counted.keys()]
+
         # add machine learning model here
-        # model =
+        # model = pickle.load("final_model.pkl")
         authors_list_from_model = [
             {
                 "name": "Roman Jurowetzki",
@@ -53,10 +78,8 @@ def search():
                 "link": "A2160074034"
             }
         ]
-        dropouts_numbers = [3, 5, 5, 7]
-        dropouts_years = [2017, 2018, 2019, 2020]
 
-        return render_template("search.html", search_results=authors_list_from_model, form=form, dropout_numbers=dropouts_numbers, dropout_years=dropouts_years)
+        return render_template("search.html", search_results=authors_list_from_model, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years))
     
     else:
         print(form.errors)
