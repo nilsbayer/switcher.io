@@ -13,7 +13,7 @@
                 <form style="display: block;" action="" method="POST">
                     {{ form.csrf_token() }}
                     <div class="select-container">
-                        {{ form.institution.label }}
+                        {{ form.institution.label(class="inst-label") }}
                         {{ form.institution }}
                     </div>
                     {{ form.search_btn(class="primary-btn") }}
