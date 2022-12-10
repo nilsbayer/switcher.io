@@ -63,6 +63,7 @@ def search():
         # Get the dropout numbers for the institution
         dropouts_numbers = [num for num in years_counted.values()]
         dropouts_years = [int(num) for num in years_counted.keys()]
+        len_dropouts = len(dropouts_numbers)
 
         # add machine learning model here
         # model = pickle.load("final_model.pkl")
@@ -79,7 +80,7 @@ def search():
             }
         ]
 
-        return render_template("search.html", search_results=authors_list_from_model, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years))
+        return render_template("search.html", len_dropouts=len_dropouts, search_results=authors_list_from_model, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years))
     
     else:
         print(form.errors)
