@@ -10,7 +10,7 @@
             <h3>Find researchers in your institution that are likely to switch to industry</h3>
             <div style="padding:1rem" class="shadow-box">
                 <span style="display:block;margin-bottom: 2rem">Use the filter to find the best researchers for you.</span>
-                <form style="display: block;" action="" method="POST">
+                <form style="display: block;" id="search-form" action="" method="POST">
                     {{ form.csrf_token() }}
                     <div class="select-container">
                         {{ form.institution.label(class="inst-label") }}
@@ -38,7 +38,7 @@
                 {% for profile in search_results %}
                     <div class="shadow-box paper-entry">
                         <span class="paper-name">{{ profile.name }}</span>
-                        <span class="paper-year">Prob. of {{ profile.prob_score }}</span>
+                        <!-- <span class="paper-year">Prob. of {{ profile.prob_score }}</span> -->
                         <a class="paper-link lazy-link" href="profile/{{ profile.link }}">
                             <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_3_28)">
@@ -80,5 +80,14 @@
                 });
             </script>
         {% endif %}
+        <script>
+            const search_form = document.getElementById("search-form")
+            search_form.addEventListener("submit", () => {
+                console.log("CLICKED")
+                let newDiv = document.createElement("div")
+                newDiv.classList.add("loading-circle")
+                document.querySelector(".box").append(newDiv)
+            })
+        </script>
     </main>
 {% endblock %}
