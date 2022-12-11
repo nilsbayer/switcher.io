@@ -35,7 +35,27 @@ def home():
     else:
         prior_researcher_list = json.loads(prior_researcher_list) 
         return render_template("index.html", prior_researcher_list=list(reversed(prior_researcher_list)))
-    
+
+def get_request(url):
+    r = requests.get(url)
+    return r.json()
+
+async def asyncr_get_req(url):
+    return await asyncio.to_thread(get_request, url)
+
+async def get_coauthor_names(coauthor):
+    url = f"https://api.openalex.org/people/{coauthor}"
+    author_data = await asyncr_get_req(url)
+    return author_data.get("display_name") 
+
+async def get_coauthor_names_and_link(coauthor):
+    url = f"https://api.openalex.org/people/{coauthor}"
+    author_data = await asyncr_get_req(url)
+    item = {
+        "name": author_data.get("display_name"),
+        "link": coauthor
+    }
+    return item
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
@@ -66,7 +86,33 @@ def search():
         len_dropouts = len(dropouts_numbers)
 
         # add machine learning model here
-        # model = pickle.load("final_model.pkl")
+        # model = pickle.load(open('final_model.pkl', 'rb'))
+
+        # Get researchers at institution
+        this_inst_authors_entries = papers_col.find({
+            "institution_name": chosen_inst,
+            "dropout_year": {"$exists": False}
+        })
+
+        inst_authors = list(set([auth["author_id"].replace("https://openalex.org/", "") for auth in this_inst_authors_entries]))
+        length_inst_auths = len(inst_authors)
+
+        async def main(coauthors):
+            author_names = await asyncio.gather(*[get_coauthor_names_and_link(coauthor) for coauthor in coauthors])
+            return author_names
+
+        inst_author_names = []
+        if length_inst_auths > 6:
+            for i in range(math.ceil(length_inst_auths / 6)):
+                current_coauthor_list = inst_authors[:6]
+                del inst_authors[:6]
+                inst_author_names_part = asyncio.run(main(current_coauthor_list))
+                for auth_item in inst_author_names_part: inst_author_names.append(auth_item)
+                time.sleep(1)
+        else:
+            inst_author_names = asyncio.run(main(inst_authors))
+
+
         authors_list_from_model = [
             {
                 "name": "Roman Jurowetzki",
@@ -80,7 +126,7 @@ def search():
             }
         ]
 
-        return render_template("search.html", len_dropouts=len_dropouts, search_results=authors_list_from_model, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years))
+        return render_template("search.html", len_dropouts=len_dropouts, search_results=inst_author_names, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years))
     
     else:
         print(form.errors)
@@ -206,17 +252,6 @@ def researcher(researcher_id):
     coauthor_list = [coauthor.replace("https://openalex.org/", "") for coauthor in coauthor_list]
    
     # ASYNC
-    def get_request(url):
-        r = requests.get(url)
-        return r.json()
-
-    async def asyncr_get_req(url):
-        return await asyncio.to_thread(get_request, url)
-
-    async def get_coauthor_names(coauthor):
-        url = f"https://api.openalex.org/people/{coauthor}"
-        author_data = await asyncr_get_req(url)
-        return author_data.get("display_name")
 
     async def get_nodes_and_edges(coauthor_name_id, researcher_id):
         node_list = []

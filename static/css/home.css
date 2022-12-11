@@ -44,6 +44,7 @@ main {
 
 .box {
     margin-bottom: 4rem;
+    position: relative;
 }
 
 .shadow-box {
@@ -196,6 +197,43 @@ select:focus {
 
 #search_btn {
     margin:  1rem 0 1rem 0;
+}
+
+.loading-circle {
+    margin-left: 40%;
+    margin-top: 2rem;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    border-top: 10px solid orange;
+    border-bottom: 10px solid white;
+    border-right: 10px solid orange;
+    border-left: 10px solid white;
+    animation: turn 2s linear infinite;
+}
+
+@keyframes turn {
+    0% {
+        transform: rotate(0deg);
+        border-left: 10px solid white;
+        border-bottom: 10px solid white;
+        border-right: 10px solid orange;
+        border-top: 10px solid orange;
+    }
+    50% {
+        transform: rotate(180deg);
+        border-left: 10px solid orange;
+        border-bottom: 10px solid orange;
+        border-right: 10px solid white;
+        border-top: 10px solid white;
+    }
+    100% {
+        transform: rotate(360deg);
+        border-left: 10px solid white;
+        border-bottom: 10px solid white;
+        border-right: 10px solid orange;
+        border-top: 10px solid orange;
+    }
 }
 
 
