@@ -205,9 +205,9 @@ select:focus {
     width: 6rem;
     height: 6rem;
     border-radius: 50%;
-    border-top: 10px solid orange;
+    border-top: 10px solid var(--accent-color);
     border-bottom: 10px solid white;
-    border-right: 10px solid orange;
+    border-right: 10px solid var(--accent-color);
     border-left: 10px solid white;
     animation: turn 2s linear infinite;
 }
@@ -217,13 +217,13 @@ select:focus {
         transform: rotate(0deg);
         border-left: 10px solid white;
         border-bottom: 10px solid white;
-        border-right: 10px solid orange;
-        border-top: 10px solid orange;
+        border-right: 10px solid var(--accent-color);
+        border-top: 10px solid var(--accent-color);
     }
     50% {
         transform: rotate(180deg);
-        border-left: 10px solid orange;
-        border-bottom: 10px solid orange;
+        border-left: 10px solid var(--accent-color);
+        border-bottom: 10px solid var(--accent-color);
         border-right: 10px solid white;
         border-top: 10px solid white;
     }
@@ -231,9 +231,13 @@ select:focus {
         transform: rotate(360deg);
         border-left: 10px solid white;
         border-bottom: 10px solid white;
-        border-right: 10px solid orange;
-        border-top: 10px solid orange;
+        border-right: 10px solid var(--accent-color);
+        border-top: 10px solid var(--accent-color);
     }
+}
+
+.author-entry {
+    grid-template-columns: ;
 }
 
 

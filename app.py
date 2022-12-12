@@ -11,6 +11,8 @@ from time import perf_counter
 import math
 import pickle
 from collections import Counter
+import sklearn
+import numpy as np
 
 app = Flask(__name__)
 
@@ -85,9 +87,6 @@ def search():
         dropouts_years = [int(num) for num in years_counted.keys()]
         len_dropouts = len(dropouts_numbers)
 
-        # add machine learning model here
-        # model = pickle.load(open('final_model.pkl', 'rb'))
-
         # Get researchers at institution
         this_inst_authors_entries = papers_col.find({
             "institution_name": chosen_inst,
@@ -96,6 +95,7 @@ def search():
 
         inst_authors = list(set([auth["author_id"].replace("https://openalex.org/", "") for auth in this_inst_authors_entries]))
         length_inst_auths = len(inst_authors)
+        print(length_inst_auths)
 
         async def main(coauthors):
             author_names = await asyncio.gather(*[get_coauthor_names_and_link(coauthor) for coauthor in coauthors])
@@ -104,29 +104,43 @@ def search():
         inst_author_names = []
         if length_inst_auths > 6:
             for i in range(math.ceil(length_inst_auths / 6)):
+                print(f"Round: {i}")
                 current_coauthor_list = inst_authors[:6]
                 del inst_authors[:6]
                 inst_author_names_part = asyncio.run(main(current_coauthor_list))
                 for auth_item in inst_author_names_part: inst_author_names.append(auth_item)
-                time.sleep(1)
+                time.sleep(2)
         else:
             inst_author_names = asyncio.run(main(inst_authors))
 
 
-        authors_list_from_model = [
-            {
-                "name": "Roman Jurowetzki",
-                "prob_score": "98%",
-                "link": "A2164292938"
-            },
-            {
-                "name": "Yasmine Sarraj",
-                "prob_score": "98%",
-                "link": "A2160074034"
-            }
-        ]
+        # add machine learning model here
+        model = pickle.load(open('final_model.pkl', 'rb'))
 
-        return render_template("search.html", len_dropouts=len_dropouts, search_results=inst_author_names, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years))
+        def make_prediction(auth_vals):
+            y_pred = model.predict_proba(auth_vals)
+            pred = y_pred[:, 1][0] * 100
+            pred = "%.2f" % pred
+            return pred
+
+        async def asyncr_prediction(auth_vals):
+            return await asyncio.to_thread(make_prediction, auth_vals)
+
+        async def get_author_pred(auth_to_pred):
+            author_pred = await asyncr_prediction(auth_to_pred)
+            return author_pred
+
+        async def main(auths_to_pred):
+            author_preds = await asyncio.gather(*[get_author_pred(auth_to_pred.get("pred_data")) for auth_to_pred in auths_to_pred])
+            return author_preds
+
+        for auth in inst_author_names:
+            auth.update({"pred_data": np.array([[6.642460, 0.299475, 25.643250, 21.115606, 5042, 0, 0.000493, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])})
+
+        author_predictions = asyncio.run(main(inst_author_names))
+        authors_zip = list(zip(inst_author_names, author_predictions))
+
+        return render_template("search.html", len_dropouts=len_dropouts, search_results=authors_zip, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years))
     
     else:
         print(form.errors)
