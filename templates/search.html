@@ -8,7 +8,7 @@
     <main>
         <div class="box">
             <h3>Find researchers in your institution that are likely to switch to industry</h3>
-            <div style="padding:1rem" class="shadow-box">
+            <div style="padding:1rem" id="form-container" class="shadow-box">
                 <span style="display:block;margin-bottom: 2rem">Use the filter to find the best researchers for you.</span>
                 <form style="display: block;" id="search-form" action="" method="POST">
                     {{ form.csrf_token() }}
@@ -36,10 +36,10 @@
             <div class="box">
                 <h3>Likely future dropouts:</h3>
                 {% for profile in search_results %}
-                    <div class="shadow-box paper-entry">
-                        <span class="paper-name">{{ profile.name }}</span>
-                        <!-- <span class="paper-year">Prob. of {{ profile.prob_score }}</span> -->
-                        <a class="paper-link lazy-link" href="profile/{{ profile.link }}">
+                    <div class="shadow-box paper-entry author-entry">
+                        <span class="paper-name" style="width:50%">{{ profile[0].get("name") }}</span>
+                        <span class="paper-year" style="width:30%">Prob. of {{ profile[1] }}%</span>
+                        <a class="paper-link lazy-link" target="_blank" href="profile/{{ profile[0].get('link') }}">
                             <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_3_28)">
                                 <path d="M14.375 0C13.5799 0 12.9375 0.642383 12.9375 1.4375C12.9375 2.23262 13.5799 2.875 14.375 2.875H18.09L9.04727 11.9223C8.48574 12.4838 8.48574 13.3957 9.04727 13.9572C9.60879 14.5188 10.5207 14.5188 11.0822 13.9572L20.125 4.90996V8.625C20.125 9.42012 20.7674 10.0625 21.5625 10.0625C22.3576 10.0625 23 9.42012 23 8.625V1.4375C23 0.642383 22.3576 0 21.5625 0H14.375ZM3.59375 1.4375C1.6082 1.4375 0 3.0457 0 5.03125V19.4062C0 21.3918 1.6082 23 3.59375 23H17.9688C19.9543 23 21.5625 21.3918 21.5625 19.4062V14.375C21.5625 13.5799 20.9201 12.9375 20.125 12.9375C19.3299 12.9375 18.6875 13.5799 18.6875 14.375V19.4062C18.6875 19.8016 18.3641 20.125 17.9688 20.125H3.59375C3.19844 20.125 2.875 19.8016 2.875 19.4062V5.03125C2.875 4.63594 3.19844 4.3125 3.59375 4.3125H8.625C9.42012 4.3125 10.0625 3.67012 10.0625 2.875C10.0625 2.07988 9.42012 1.4375 8.625 1.4375H3.59375Z" fill="black"/>
@@ -81,12 +81,15 @@
             </script>
         {% endif %}
         <script>
+            let search_clicked = false
             const search_form = document.getElementById("search-form")
             search_form.addEventListener("submit", () => {
-                console.log("CLICKED")
-                let newDiv = document.createElement("div")
-                newDiv.classList.add("loading-circle")
-                document.querySelector(".box").append(newDiv)
+
+                    let newDiv = document.createElement("div")
+                    newDiv.classList.add("loading-circle")
+                    document.querySelector(".box").append(newDiv)
+                    document.getElementById("form-container").style.display = "none"
+
             })
         </script>
     </main>
