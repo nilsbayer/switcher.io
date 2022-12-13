@@ -240,6 +240,27 @@ select:focus {
     grid-template-columns: ;
 }
 
+.prob-stat {
+    color: var(--accent-color);
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.prob-circle {
+    fill: none;
+    stroke: var(--accent-color);
+    stroke-width: 6px;
+    stroke-dasharray: 252;
+}
+
+.prob-perc {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    color: var(--accent-color);
+    font-weight: bolder;
+}
 
 /* Adapting for small screens */
 
