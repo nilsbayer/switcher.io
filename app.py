@@ -168,6 +168,10 @@ def search():
 def help():
     return render_template("help.html")
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
 @app.route("/profile/<string:researcher_id>", methods=["GET"])
 def researcher(researcher_id):
     start_time = perf_counter()

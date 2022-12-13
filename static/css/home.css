@@ -175,7 +175,50 @@ h3 {
     height: 4rem;
     margin-bottom: 1rem;
     text-align: center;
+    position: relative;
 }
+
+.menu-link::before,
+.menu-link::after {
+    --scale: 0;
+    --tooltip-color: rgb(0, 0, 0, 0.6);
+    --arrow-size: .5rem;
+
+    pointer-events: none;
+    position: absolute; 
+    left: 120%;
+    top: 50%;
+    transform: translateY(var(--translateY,0)) translateX(var(--translateX, 0)) scale(var(--scale)) rotate(var(--rotation, 0));
+    transition: .15s transform .1s;
+    transform-origin: left;
+}
+
+.menu-link::before {
+    --translateY: -50%;
+    --translateX: var(--arrow-size);
+    content: attr(data-tooltip);
+    border-radius: 10px;
+    width: max-content;
+    padding: .6rem;
+    color: white;
+    background-color: var(--tooltip-color);
+}
+
+.menu-link::after {
+    --translateY: 0;
+    --translateX: 0;
+    --rotation: 90deg;
+    content: "";
+    border: var(--arrow-size) solid transparent;
+    border-top-color: var(--tooltip-color);
+    transform-origin: top;
+}
+
+.menu-link:hover::before,
+.menu-link:hover::after {
+    --scale:1;
+}
+
 .menu-link svg {
     margin: 1rem 0;
 }
@@ -270,6 +313,7 @@ select:focus {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
 }
+
 
 /* Adapting for small screens */
 
