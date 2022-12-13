@@ -38,10 +38,15 @@ def home():
     prior_inst_name = request.cookies.get("last_inst_name")
 
     if prior_researcher_list == None:
-        return render_template("index.html")
+        if prior_inst_years == None:
+            return render_template("index.html")
+        else:
+            return render_template("index.html", prior_inst_name=prior_inst_name, prior_inst_years=json.loads(prior_inst_years), prior_inst_numbers=json.loads(prior_inst_numbers))
     else:
         prior_researcher_list = json.loads(prior_researcher_list) 
-        return render_template("index.html", prior_inst_name=prior_inst_name, prior_researcher_list=list(reversed(prior_researcher_list)), prior_inst_years=json.loads(prior_inst_years), prior_inst_numbers=json.loads(prior_inst_numbers),)
+        if prior_inst_years == None:
+            return render_template("index.html", prior_researcher_list=list(reversed(prior_researcher_list)))
+        return render_template("index.html", prior_inst_name=prior_inst_name, prior_researcher_list=list(reversed(prior_researcher_list)), prior_inst_years=json.loads(prior_inst_years), prior_inst_numbers=json.loads(prior_inst_numbers))
 
 def get_request(url):
     r = requests.get(url)
