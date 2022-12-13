@@ -8,6 +8,41 @@
 {% block content %}
     <main>
         <h1>Homepage</h1>
+        {% if prior_inst_years %}
+            <div class="box">
+                <h3>Recently queried institution: {{ prior_inst_name }}</h3>
+                <div class="shadow-box" style="padding: 2rem;">
+                    <div class="citations">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <script>
+                const ctx = document.getElementById('myChart');
+        
+                new Chart(ctx, {
+                    data: {
+                        datasets: [
+                            {
+                                type: 'bar',
+                                label: 'Number of dropouts',
+                                data: {{ prior_inst_numbers }},
+                                borderColor: '#23B08F',
+                                backgroundColor: '#23B08F'
+                            }
+                        ],
+                        labels: {{prior_inst_years}}
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+        {% endif %}
         {% if prior_researcher_list %}
             <div class="box">
                 <h3>Recently visited profiles</h3>

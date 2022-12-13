@@ -33,11 +33,15 @@ papers_col = mydb["papers_ai"]
 @app.route("/")
 def home():
     prior_researcher_list = request.cookies.get("prior_researchers")
+    prior_inst_years = request.cookies.get("last_inst_years")
+    prior_inst_numbers = request.cookies.get("last_inst_numbers")
+    prior_inst_name = request.cookies.get("last_inst_name")
+
     if prior_researcher_list == None:
         return render_template("index.html")
     else:
         prior_researcher_list = json.loads(prior_researcher_list) 
-        return render_template("index.html", prior_researcher_list=list(reversed(prior_researcher_list)))
+        return render_template("index.html", prior_inst_name=prior_inst_name, prior_researcher_list=list(reversed(prior_researcher_list)), prior_inst_years=json.loads(prior_inst_years), prior_inst_numbers=json.loads(prior_inst_numbers),)
 
 def get_request(url):
     r = requests.get(url)
@@ -64,6 +68,7 @@ async def get_coauthor_names_and_link(coauthor):
 def search():
     form = SearchForm()
     if form.validate_on_submit():
+        start_time = perf_counter()
         chosen_inst = form.institution.data
 
         this_inst_entries = papers_col.find({
@@ -141,8 +146,15 @@ def search():
         author_predictions = asyncio.run(main(inst_author_names))
         authors_zip = list(zip(inst_author_names, author_predictions))
 
-        return render_template("search.html", len_dropouts=len_dropouts, search_results=authors_zip, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years))
-    
+        res = make_response(render_template("search.html", len_dropouts=len_dropouts, search_results=authors_zip, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years)))
+        if len(dropouts_years) > 0:
+            res.set_cookie("last_inst_years", json.dumps(dropouts_years))
+            res.set_cookie("last_inst_numbers", json.dumps(dropouts_numbers))
+            res.set_cookie("last_inst_name", chosen_inst)
+
+        print(f"Loading time: {perf_counter() - start_time}")
+        return res
+
     else:
         print(form.errors)
         return render_template("search.html", form=form)
