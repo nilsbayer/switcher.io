@@ -13,6 +13,7 @@ import pickle
 from collections import Counter
 import sklearn
 import numpy as np
+import copy
 
 app = Flask(__name__)
 
@@ -264,6 +265,8 @@ def researcher(researcher_id):
     coauthor_list.remove(full_query_str)
     length_coauthor = len(coauthor_list)
     coauthor_list = [coauthor.replace("https://openalex.org/", "") for coauthor in coauthor_list]
+    copied_coauthor_list = copy.copy(coauthor_list)
+    print(coauthor_list)
    
     # ASYNC
 
@@ -317,6 +320,69 @@ def researcher(researcher_id):
 
     nodes.append(first_node)
     nodes = list(reversed(nodes))
+
+    # Get connections between coauthors
+    def get_connection(author_url):
+        coauthors_paper_ids = papers_col.distinct("paper_id", {"author_id": author_url})
+        co_coauthor_list = papers_col.distinct("author_id",{
+            "paper_id": { "$in": coauthors_paper_ids}
+        })
+        co_coauthor_list.remove(author_url)
+        co_coauthor_list = [coauthor.replace("https://openalex.org/", "") for coauthor in co_coauthor_list]
+        return co_coauthor_list
+
+    async def asyncr_connection(author_url):
+        return await asyncio.to_thread(get_connection, author_url)
+
+    async def get_author_cocoauthors(author_url):
+        author_url = f"https://openalex.org/{author_url}"
+        author_pred = await asyncr_connection(author_url)
+        return author_pred
+
+    async def main(auths_to_connect):
+        author_preds = await asyncio.gather(*[get_author_cocoauthors(auth_to_connect) for auth_to_connect in auths_to_connect])
+        # print("AUTHOR_PREDS:", author_preds)
+        return author_preds
+
+    # author_cocoauthors = asyncio.run(main(coauthor_list))
+    final_author_cocoauthors = []
+    print("LENGTH COAUTHOR", length_coauthor)
+    if length_coauthor < 6:
+        for i in range(math.ceil(length_coauthor / 6)):
+            print(f"Round: {i}")
+            current_coauthor_list = coauthor_list[:6]
+            del coauthor_list[:6]
+            author_cocoauthors = asyncio.run(main(current_coauthor_list))
+            for auth_item in author_cocoauthors: final_author_cocoauthors.append(auth_item)
+            time.sleep(1)
+    else:
+        for coauth in copied_coauthor_list:
+            coauth = f"https://openalex.org/{coauth}"
+            coauthors_paper_ids = papers_col.distinct("paper_id", {"author_id": coauth})
+            co_coauthor_list = papers_col.distinct("author_id",{
+                "paper_id": { "$in": coauthors_paper_ids}
+            })
+            print("AUTHORS", co_coauthor_list)
+            co_coauthor_list.remove(coauth)
+            co_coauthor_list = [coauthor.replace("https://openalex.org/", "") for coauthor in co_coauthor_list]
+            final_author_cocoauthors.append(co_coauthor_list)
+
+    zipped_coauthors = list(zip(copied_coauthor_list, final_author_cocoauthors))
+    for zip_coauth in zipped_coauthors:
+        for cocoauth in zip_coauth[1]:
+            if cocoauth in copied_coauthor_list:
+                edge =  {
+                    "from": zip_coauth[0],
+                    "to": cocoauth,
+                    "width": 1
+                }
+                other_way_around = {
+                "from": cocoauth,
+                "to": zip_coauth[0],
+                "width": 1
+                }
+                if other_way_around not in edges:
+                    edges.append(edge)
     # ASYNC ENDE
 
     # Calculate switching probability
