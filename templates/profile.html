@@ -25,7 +25,16 @@
                             <span>Associated institutions:</span>
                             <span>{{ personal_info.list_institutions }}</span>
                         </div>
-                        <img class="profile-pic" src="../static/img/proifle.webp" alt="">
+                        <!-- <img class="profile-pic" src="../static/img/proifle.webp" alt=""> -->
+                        <div>
+                            <span class="prob-stat">Probability of switching:</span>
+                            <div style="position:relative; width: fit-content;">
+                                <svg width="100" height="100" style="transform: rotate(-90deg);">
+                                    <circle class="prob-circle" r="40" cx="50" cy="50" style="stroke-dashoffset: {{ prob_circle }};"></circle>
+                                </svg>
+                                <span class="prob-perc">{{ switching_prob }}%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

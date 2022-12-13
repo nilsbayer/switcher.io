@@ -319,7 +319,18 @@ def researcher(researcher_id):
     nodes = list(reversed(nodes))
     # ASYNC ENDE
 
-    res = make_response(render_template("profile.html", node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
+    # Calculate switching probability
+    model = pickle.load(open('final_model.pkl', 'rb'))
+
+    auth_vals = np.array([[6.642460, 0.299475, 25.643250, 21.115606, 5042, 0, 0.000493, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+
+    y_pred = model.predict_proba(auth_vals)
+    prediction = y_pred[:, 1][0]
+
+    switching_prob = "%.0f" % round((prediction * 100), 0)
+    prob_circle = 252 - (252*prediction)
+
+    res = make_response(render_template("profile.html", prob_circle=prob_circle, switching_prob=switching_prob, node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
     this_researcher = {
         "token": researcher_id,
         "name": authors_name,
