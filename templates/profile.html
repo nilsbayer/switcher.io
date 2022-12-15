@@ -25,17 +25,31 @@
                             <span>Associated institutions:</span>
                             <span>{{ personal_info.list_institutions }}</span>
                         </div>
-                        <!-- <img class="profile-pic" src="../static/img/proifle.webp" alt=""> -->
+                        <img class="profile-pic" src="../static/img/proifle.webp" alt="">                    
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <h3>Predictions</h3>
+                <div class="shadow-box" style="padding: 2rem;">
+                    <div class="prob-box">
                         <div>
                             <span class="prob-stat">Probability of switching:</span>
-                            <div style="position:relative; width: fit-content;">
+                            <div style="position:relative; width: fit-content; margin-left: 25%;">
                                 <svg width="100" height="100" style="transform: rotate(-90deg);">
                                     <circle class="prob-circle" r="40" cx="50" cy="50" style="stroke-dashoffset: {{ prob_circle }};"></circle>
                                 </svg>
                                 <span class="prob-perc">{{ switching_prob }}%</span>
                             </div>
                         </div>
-                    </div>
+                        <div>
+                            <span>In case of a switch, {{ personal_info.author_name }} might drop out in</span>
+                            <div style="padding:.5rem 0; position: relative;height: inherit;">
+                                <span class="prob-perc drop-out-year">{{ personal_info.drop_out_year }}</span>
+                            </div>
+                        </div>
+                    </div>                
                 </div>
             </div>
 

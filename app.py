@@ -14,6 +14,8 @@ from collections import Counter
 import sklearn
 import numpy as np
 import copy
+import pandas as pd
+import itertools
 
 app = Flask(__name__)
 
@@ -104,25 +106,36 @@ def search():
             "dropout_year": {"$exists": False}
         })
 
-        inst_authors = list(set([auth["author_id"].replace("https://openalex.org/", "") for auth in this_inst_authors_entries]))
-        length_inst_auths = len(inst_authors)
-        print(length_inst_auths)
-
-        async def main(coauthors):
-            author_names = await asyncio.gather(*[get_coauthor_names_and_link(coauthor) for coauthor in coauthors])
-            return author_names
-
         inst_author_names = []
-        if length_inst_auths > 6:
-            for i in range(math.ceil(length_inst_auths / 6)):
-                print(f"Round: {i}")
-                current_coauthor_list = inst_authors[:6]
-                del inst_authors[:6]
-                inst_author_names_part = asyncio.run(main(current_coauthor_list))
-                for auth_item in inst_author_names_part: inst_author_names.append(auth_item)
-                time.sleep(2)
-        else:
-            inst_author_names = asyncio.run(main(inst_authors))
+        for entry in this_inst_authors_entries:
+            entry_ = {
+                "author_id": entry["author_id"].replace("https://openalex.org/", ""),
+                "author_name": entry["author_name"]
+            }
+            if entry_ not in inst_author_names:
+                inst_author_names.append(entry_)
+        
+        print(inst_author_names)
+        length_inst_auths = len(inst_author_names)
+
+        # inst_authors = list(set([auth["author_id"].replace("https://openalex.org/", "") for auth in this_inst_authors_entries]))
+        # length_inst_auths = len(inst_authors)
+
+        # async def main(coauthors):
+        #     author_names = await asyncio.gather(*[get_coauthor_names_and_link(coauthor) for coauthor in coauthors])
+        #     return author_names
+
+        # inst_author_names = []
+        # if length_inst_auths > 6:
+        #     for i in range(math.ceil(length_inst_auths / 6)):
+        #         print(f"Round: {i}")
+        #         current_coauthor_list = inst_authors[:6]
+        #         del inst_authors[:6]
+        #         inst_author_names_part = asyncio.run(main(current_coauthor_list))
+        #         for auth_item in inst_author_names_part: inst_author_names.append(auth_item)
+        #         time.sleep(2)
+        # else:
+        #     inst_author_names = asyncio.run(main(inst_authors))
 
 
         # add machine learning model here
@@ -131,7 +144,7 @@ def search():
         def make_prediction(auth_vals):
             y_pred = model.predict_proba(auth_vals)
             pred = y_pred[:, 1][0] * 100
-            pred = "%.2f" % pred
+            
             return pred
 
         async def asyncr_prediction(auth_vals):
@@ -145,11 +158,15 @@ def search():
             author_preds = await asyncio.gather(*[get_author_pred(auth_to_pred.get("pred_data")) for auth_to_pred in auths_to_pred])
             return author_preds
 
+        df = pd.read_csv("x.csv")
         for auth in inst_author_names:
-            auth.update({"pred_data": np.array([[6.642460, 0.299475, 25.643250, 21.115606, 5042, 0, 0.000493, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])})
+            authors_pred_vals = df[df["author_id"] == auth.get("author_id")].iloc[:1, 2:]
+            auth.update({"pred_data": authors_pred_vals})
 
         author_predictions = asyncio.run(main(inst_author_names))
         authors_zip = list(zip(inst_author_names, author_predictions))
+        authors_zip = sorted(authors_zip, key=lambda d: d[1], reverse=True) 
+        print(authors_zip)
 
         res = make_response(render_template("search.html", len_dropouts=len_dropouts, search_results=authors_zip, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years)))
         if len(dropouts_years) > 0:
@@ -166,7 +183,7 @@ def search():
 
 @app.route("/help")
 def help():
-    return render_template("help.html")
+    return render_template("help.html", df_html=df_html)
 
 @app.route("/about")
 def about():
@@ -187,29 +204,29 @@ def researcher(researcher_id):
     all_citation_years = list(reversed([work.get("year") for work in r.json().get("counts_by_year")]))
 
     average_citations = {
-        "2000": 1000,
-        "2001": 1200,
-        "2002": 1400,
-        "2003": 1600,
-        "2004": 1800,
-        "2005": 2000,
-        "2006": 2200,
-        "2007": 2400,
-        "2008": 2600,
-        "2009": 2800,
-        "2010": 3000,
-        "2011": 3200,
-        "2012": 3400,
-        "2013": 3600,
-        "2014": 3800,
-        "2015": 4000,
-        "2016": 4200,
-        "2017": 4400,
-        "2018": 4600,
-        "2019": 4800,
-        "2020": 5000,
-        "2021": 5200,
-        "2022": 5400
+        "2000": 0,
+        "2001": 0,
+        "2002": 0,
+        "2003": 0,
+        "2004": 0,
+        "2005": 0,
+        "2006": 0,
+        "2007": 0,
+        "2008": 0,
+        "2009": 0,
+        "2010": 0,
+        "2011": 0,
+        "2012": 39.11,
+        "2013": 43.66,
+        "2014": 46.86,
+        "2015": 50.09,
+        "2016": 51.82,
+        "2017": 54.57,
+        "2018": 63.57,
+        "2019": 80.84,
+        "2020": 98.41,
+        "2021": 109.98,
+        "2022": 74.14
     }
 
     average_citations = [average_citations.get(str(y)) for y in all_citation_years]
@@ -245,9 +262,6 @@ def researcher(researcher_id):
         for year_entry in paper_entry:
             all_years_list.append(year_entry["year"])
 
-    # Dictionary of years and citations
-    
-
     #  List of years for x axis
     all_years_list = set(all_years_list)
     all_years_list = list(all_years_list)
@@ -267,15 +281,40 @@ def researcher(researcher_id):
         "author_id": full_query_str
     }).sort("year", 1)
     inst_country_list = [paper.get("institution_country") for paper in researcher_data]
-    current_country = inst_country_list[-1]
+    
+    drop_out_year = 2024
+    print(all_institutions, inst_country_list)
+
+    # researcher_data = papers_col.find({
+    #     "author_id": full_query_str
+    # }).sort("year", 1)
+
+    # last_inst_of_author = researcher_data[0].get("last_inst")
+    # last_inst_of_author = last_inst_of_author.replace("https://openalex.org/", "")
+    # r_last_inst = requests.get(f"https://api.openalex.org/institutions/{last_inst_of_author}")
+    # last_inst_of_author = r_last_inst.json().get("display_name")
+
+    if all_institutions[-1] != None and all_institutions[-1] != "":
+        last_inst_of_author = all_institutions[-1]
+    else:
+        last_inst_of_author[-2]
+
+    if inst_country_list[-1] != None and inst_country_list[-1] != "":
+        current_country = inst_country_list[-1]
+    elif inst_country_list[-1] == None or inst_country_list[-1] == "":
+        if inst_country_list[-2] != None or inst_country_list[-2] != "":
+            current_country = inst_country_list[-2]
+        else:
+            current_country = "-"
 
     personal_stats = {
         "author_name": authors_name,
         "author_surname": authors_surname,
         "list_institutions": list_institutions,
-        "last_inst": all_institutions[-1],
+        "last_inst": last_inst_of_author,
         "author_location": current_country,
-        "total_cits": sum(citation_counts)
+        "total_cits": sum(citation_counts),
+        "drop_out_year": drop_out_year
     }
 
     # Get data prepared for the network visualization
@@ -287,7 +326,6 @@ def researcher(researcher_id):
     length_coauthor = len(coauthor_list)
     coauthor_list = [coauthor.replace("https://openalex.org/", "") for coauthor in coauthor_list]
     copied_coauthor_list = copy.copy(coauthor_list)
-    print(coauthor_list)
    
     # ASYNC
 
@@ -409,10 +447,13 @@ def researcher(researcher_id):
     # Calculate switching probability
     model = pickle.load(open('final_model.pkl', 'rb'))
 
-    auth_vals = np.array([[6.642460, 0.299475, 25.643250, 21.115606, 5042, 0, 0.000493, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+    df = pd.read_csv("x.csv")
+    queried_researcher = df[df["author_id"] == researcher_id].iloc[:1, 2:]
 
-    y_pred = model.predict_proba(auth_vals)
+    y_pred = model.predict_proba(queried_researcher)
     prediction = y_pred[:, 1][0]
+
+    print("MODEL:", model.predict(queried_researcher))
 
     switching_prob = "%.0f" % round((prediction * 100), 0)
     prob_circle = 252 - (252*prediction)

@@ -85,6 +85,11 @@ h3 {
     width:10rem;
 }
 
+.prob-box{
+    display: flex;
+    gap: 5rem;
+}
+
 .paper-entry {
     padding: 1rem;
     position: relative;
@@ -296,7 +301,7 @@ select:focus {
 }
 
 .prob-stat {
-    color: var(--accent-color);
+    /* color: var(--accent-color); */
     display: inline-block;
     margin-bottom: 1rem;
 }
@@ -320,6 +325,11 @@ select:focus {
 .welcome-box {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
+}
+
+.drop-out-year {
+    top: calc(1rem + 50px);
+    font-size: 1.4rem;
 }
 
 
@@ -418,6 +428,19 @@ select:focus {
         display: grid;
         grid-template-columns: 1fr;
         gap: 2rem;
+    }
+
+    .prob-box{
+        display: block;
+    }
+
+    .drop-out-year {
+        position: relative;
+        top: 0;
+        left: 45%;
+        display: inline-block;
+        margin-top: 2rem;
+        transform: translate(-50%,0));
     }
 
 }
