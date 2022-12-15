@@ -183,6 +183,10 @@ def search():
 
 @app.route("/help")
 def help():
+    df = pd.read_csv("x.csv")
+    print("CSV read")
+    df = df.head(5)
+    df_html = df.to_html()
     return render_template("help.html", df_html=df_html)
 
 @app.route("/about")
