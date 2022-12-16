@@ -190,11 +190,7 @@ def search():
 
 @app.route("/help")
 def help():
-    # df = pd.read_csv("x.csv")
-    # print("CSV read")
-    # df = df.head(5)
-    # df_html = df.to_html()
-    return render_template("help.html", df_html=df_html)
+    return render_template("help.html")
 
 @app.route("/about")
 def about():
@@ -513,10 +509,22 @@ def researcher(researcher_id):
     switching_prob = "%.0f" % round((prediction * 100), 0)
     prob_circle = 252 - (252*prediction)
 
+    # Model to predict after how many years the researcher might leave
+    model_years = pickle.load(open("final_model_2.pkl", "rb"))
+    years_from_first_paper = model_years.predict(queried_researcher)
+    years_from_first_paper = years_from_first_paper[0]
+    if years_from_first_paper < 4:
+        soon_var = "very soon"
+    elif years_from_first_paper >= 4 and years_from_first_paper < 7:
+        soon_var = "soon"
+    elif years_from_first_paper >= 7:
+        soon_var = "not soon"
+
+    print("PAPER YEAR", all_papers[0].get("year"))
 
     # print("NODES", nodes)
     # print("EDGES", edges)
-    res = make_response(render_template("profile.html", prob_circle=prob_circle, switching_prob=switching_prob, node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
+    res = make_response(render_template("profile.html", soon_var=soon_var, prob_circle=prob_circle, switching_prob=switching_prob, node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
     this_researcher = {
         "token": researcher_id,
         "name": authors_name,
