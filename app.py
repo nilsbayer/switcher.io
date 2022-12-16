@@ -108,9 +108,14 @@ def search():
 
         inst_author_names = []
         for entry in this_inst_authors_entries:
+            if entry.get("data_for_pred") == None:
+                pred_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            elif entry.get("data_for_pred") != None:
+                pred_data = entry.get("data_for_pred")
             entry_ = {
                 "author_id": entry["author_id"].replace("https://openalex.org/", ""),
-                "author_name": entry["author_name"]
+                "author_name": entry["author_name"],
+                "pred_data": pred_data
             }
             if entry_ not in inst_author_names:
                 inst_author_names.append(entry_)
@@ -142,6 +147,8 @@ def search():
         model = pickle.load(open('final_model.pkl', 'rb'))
 
         def make_prediction(auth_vals):
+            auth_vals = np.array([auth_vals])
+            print("AUTH_VALS", auth_vals)
             y_pred = model.predict_proba(auth_vals)
             pred = y_pred[:, 1][0] * 100
             
@@ -158,10 +165,10 @@ def search():
             author_preds = await asyncio.gather(*[get_author_pred(auth_to_pred.get("pred_data")) for auth_to_pred in auths_to_pred])
             return author_preds
 
-        df = pd.read_csv("x.csv")
-        for auth in inst_author_names:
-            authors_pred_vals = df[df["author_id"] == auth.get("author_id")].iloc[:1, 2:]
-            auth.update({"pred_data": authors_pred_vals})
+        # df = pd.read_csv("x.csv")
+        # for auth in inst_author_names:
+            # authors_pred_vals = df[df["author_id"] == auth.get("author_id")].iloc[:1, 2:]
+        #     auth.update({"pred_data": authors_pred_vals})
 
         author_predictions = asyncio.run(main(inst_author_names))
         authors_zip = list(zip(inst_author_names, author_predictions))
@@ -183,10 +190,10 @@ def search():
 
 @app.route("/help")
 def help():
-    df = pd.read_csv("x.csv")
-    print("CSV read")
-    df = df.head(5)
-    df_html = df.to_html()
+    # df = pd.read_csv("x.csv")
+    # print("CSV read")
+    # df = df.head(5)
+    # df_html = df.to_html()
     return render_template("help.html", df_html=df_html)
 
 @app.route("/about")
@@ -321,15 +328,48 @@ def researcher(researcher_id):
         "drop_out_year": drop_out_year
     }
 
+
     # Get data prepared for the network visualization
     all_papers_list = papers_col.distinct("paper_id", {"author_id": full_query_str})
-    coauthor_list = papers_col.distinct("author_id",{
+    coauthor_list = papers_col.distinct("author_id", {
         "paper_id": { "$in": all_papers_list}
     })
     coauthor_list.remove(full_query_str)
     length_coauthor = len(coauthor_list)
     coauthor_list = [coauthor.replace("https://openalex.org/", "") for coauthor in coauthor_list]
+    # coauthor_list_complex = []
+    # coauthor_list = []
+    # nodes = []
+    # edges = []
+    # for coauthor in coauthors_list:
+    #     coauthor_id = coauthor.get("author_id").replace("https://openalex.org/", "")
+    #     _ = {
+    #         "coauthor_name": coauthor.get("author_name"),
+    #         "coauthor_id": coauthor_id
+    #     }
+    #     if _ not in coauthor_list:
+    #         coauthor_list_complex.append(_)
+    #         coauthor_list.append(coauthor_id)
+    #         node = {
+    #             "color": "#c4c4c4",
+    #             "id": coauthor_id,
+    #             "label": _.get("coauthor_name"),
+    #             "shape": "dot",
+    #             "size": 10
+    #         }
+    #         edge = {
+    #             "from": researcher_id,  
+    #             "to": coauthor_id,  
+    #             "width": 1,  
+    #         }
+    #         nodes.append(node)
+    #         edges.append(edge)
+
     copied_coauthor_list = copy.copy(coauthor_list)
+    
+    # coauthor_list = list(set(coauthor_list))
+    # # length_coauthor = len(coauthor_list)
+    # print(coauthor_list)
    
     # ASYNC
 
@@ -367,6 +407,7 @@ def researcher(researcher_id):
         "shape": "square",
         "size": 10
     }
+
     nodes = []
     edges = []
 
@@ -425,7 +466,7 @@ def researcher(researcher_id):
             co_coauthor_list = papers_col.distinct("author_id",{
                 "paper_id": { "$in": coauthors_paper_ids}
             })
-            print("AUTHORS", co_coauthor_list)
+            # print("AUTHORS", co_coauthor_list)
             co_coauthor_list.remove(coauth)
             co_coauthor_list = [coauthor.replace("https://openalex.org/", "") for coauthor in co_coauthor_list]
             final_author_cocoauthors.append(co_coauthor_list)
@@ -451,8 +492,18 @@ def researcher(researcher_id):
     # Calculate switching probability
     model = pickle.load(open('final_model.pkl', 'rb'))
 
-    df = pd.read_csv("x.csv")
-    queried_researcher = df[df["author_id"] == researcher_id].iloc[:1, 2:]
+    researcher_data = papers_col.find({
+        "author_id": full_query_str
+    }).sort("year", 1)
+    queried_researcher = researcher_data[0].get("data_for_pred")
+    if queried_researcher != None:
+        queried_researcher = np.array([queried_researcher])
+    elif queried_researcher == None:
+        queried_researcher = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+    print("This resaerchers data:", queried_researcher)
+
+    # df = pd.read_csv("x.csv")
+    # queried_researcher = df[df["author_id"] == researcher_id].iloc[:1, 2:]
 
     y_pred = model.predict_proba(queried_researcher)
     prediction = y_pred[:, 1][0]
@@ -462,6 +513,9 @@ def researcher(researcher_id):
     switching_prob = "%.0f" % round((prediction * 100), 0)
     prob_circle = 252 - (252*prediction)
 
+
+    # print("NODES", nodes)
+    # print("EDGES", edges)
     res = make_response(render_template("profile.html", prob_circle=prob_circle, switching_prob=switching_prob, node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
     this_researcher = {
         "token": researcher_id,
