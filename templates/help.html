@@ -6,7 +6,45 @@
 
 {% block content %}
     <main>
-        <h1>We are here for you</h1>
-        {{ df_html|safe }}
+        <div class="box">
+            <h3>We are here for you</h3>
+            <div class="shadow-box" style="padding: 2rem;">
+                <form id="help-form" action="">
+                    <div>
+                        <div>
+                            <label for="">Select the reason for reaching out to us:</label>
+                        </div>
+                        <select name="" id="">
+                            <option value="">Technical issue</option>
+                            <option value="">Request for new functionality</option>
+                            <option value="">Other</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 2rem;">
+                        <label for="">Leave us a message:</label>
+                        <textarea style="margin: 1rem 0 0 1rem;" class="email-text" name="" id="" cols="30" rows="8">
+Hi there,
+
+my inquiry is the following:
+...
+                        </textarea>
+                    </div>
+                    <button id="sub-btn" style="margin: 0;" class="primary-btn">Send request</button>
+                </form>
+            </div>
+        </div>
     </main>
+    <script>
+        const submit_btn = document.getElementById("sub-btn")
+        const thisForm = document.getElementById("help-form")
+        thisForm.addEventListener("submit", (e) =>{
+
+            e.preventDefault()
+            thisForm.style.display = "none"
+            let thankYouMsg = document.createElement("span")
+            thankYouMsg.innerText = "Thank you for your message. It was sent successfully."
+            document.querySelector(".shadow-box").append(thankYouMsg)
+
+        })
+    </script>
 {% endblock %}
