@@ -14,8 +14,10 @@
 {% block content %}
 {% if profile_exists == True %}
         <main>
-            <h1>{{personal_info.author_name}}</h1>
-            <span id="download-btn">Save this profile</span>
+            <div class="actions-container">
+                <h1>{{personal_info.author_name}}</h1>
+                <span id="download-btn">Save this profile</span>
+            </div>
             <div class="box">
                 <div class="shadow-box" style="padding: 2rem;">
                     <div class="personal-info">
@@ -125,9 +127,28 @@
             </div>
 
             <div class="box">
-                <h3>Get in touch</h3>
+                <div class="actions-container">
+                    <div class="actions-flexed">
+                        <h3>Get more insights, create a survey</h3>
+                        <div class="shadow-box" style="padding: 2rem; min-height: max-content;">
+                            <p>A survey lets you dive more into detail and gain knowledge on further fatcors, such as happiness at work etc.</p>
+                            <a class="primary-btn span-btn" href="#" style="margin: 2rem 0 0 0">Create a survey</a>
+                        </div>
+                    </div>
+                    <div class="actions-flexed">
+                        <h3>Keep an open eye, expand your tracklist</h3>
+                        <div class="shadow-box" style="padding: 2rem; min-height: max-content;">
+                            <p>Add this profile to your tracking list and get a notification once our analysis's result changes.</p>
+                            <a class="primary-btn span-btn" href="#" id="add-to-tracklist" style="margin: 2rem 0 0 0">Add to tracklist</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <h3>Get in touch, prepare an email</h3>
                 <div class="shadow-box contact-form">
-                    <textarea class="email-text" name="" id="" cols="90" rows="12">
+                    <textarea class="email-text" name="" id="email-prepared" cols="90" rows="12">
 Dear Mrs./Mr. {{ personal_info.author_surname }},
 
 I have read your paper on “Transformer models for autonomous driving”.
@@ -138,7 +159,7 @@ We want you in our company!
 Best regards,
 John Doe
                     </textarea>
-                    <button class="primary-btn" id="copy-mail-text">Send email</button>
+                    <button class="primary-btn" id="copy-mail-text">Copy email text</button>
                 </div>
             </div>
         </main>
@@ -264,6 +285,43 @@ John Doe
                 return network;
             }
             drawGraph();
+
+            function clearSelection() {
+                if (window.getSelection) {window.getSelection().removeAllRanges();}
+                else if (document.selection) {document.selection.empty();}
+            }
+
+            document.getElementById("copy-mail-text").addEventListener("click", () => {
+                const email_prewriter = document.getElementById("email-prepared")
+                email_prewriter.select()
+                email_prewriter.setSelectionRange(0, 99999)
+                navigator.clipboard.writeText(email_prewriter.value)
+
+                clearSelection()
+
+                let copy_notification = document.createElement("div")
+                copy_notification.innerText = "Text was copied successfully."
+                copy_notification.style.backgroundColor = "gray"
+                copy_notification.style.padding = "1rem 2rem"
+                copy_notification.style.width = "fit-content"
+                copy_notification.style.position = "fixed"
+                copy_notification.style.color = "white"
+                copy_notification.style.left = "50vw"
+                copy_notification.style.bottom = "5vh"
+                copy_notification.style.borderRadius = "10px"
+                copy_notification.style.transform = "translateX(-50%)"
+                copy_notification.style.transition = ".5s all linear"
+
+                document.body.append(copy_notification)
+
+                setTimeout(() => {
+                    copy_notification.style.opacity = "0"
+
+                    setTimeout(() => {
+                        copy_notification.remove()
+                    }, 500)
+                }, 3000)
+            })
         </script>
     {% else %}
         <main>
