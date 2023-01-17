@@ -62,6 +62,7 @@ main {
 
 h1 {
     margin-bottom: 2rem;
+    display: inline-block;
 }
 
 h3 {
@@ -330,6 +331,15 @@ select:focus {
 .drop-out-year {
     top: calc(1rem + 50px);
     font-size: 1.4rem;
+}
+
+#download-btn {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+#download-btn:hover {
+    cursor: pointer;
 }
 
 
