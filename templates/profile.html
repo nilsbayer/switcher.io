@@ -6,12 +6,16 @@
     {% else %}
         <title>Profile not found - switcher.io</title>
     {% endif %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='js/profile_download.js') }}" defer></script>
 {% endblock title %}
 
 {% block content %}
 {% if profile_exists == True %}
         <main>
             <h1>{{personal_info.author_name}}</h1>
+            <span id="download-btn">Save this profile</span>
             <div class="box">
                 <div class="shadow-box" style="padding: 2rem;">
                     <div class="personal-info">
@@ -134,10 +138,9 @@ We want you in our company!
 Best regards,
 John Doe
                     </textarea>
-                    <button class="primary-btn">Send email</button>
+                    <button class="primary-btn" id="copy-mail-text">Send email</button>
                 </div>
             </div>
-
         </main>
 
         <script>

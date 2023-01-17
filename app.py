@@ -16,6 +16,7 @@ import numpy as np
 import copy
 import pandas as pd
 import itertools
+from fpdf import FPDF
 
 app = Flask(__name__)
 
@@ -117,8 +118,13 @@ def search():
                 "author_name": entry["author_name"],
                 "pred_data": pred_data
             }
-            if entry_ not in inst_author_names:
-                inst_author_names.append(entry_)
+
+            author_last_entry = papers_col.find({
+                "author_id": entry["author_id"]
+            }).sort("year", -1)
+            if author_last_entry[0].get("institution_name") == chosen_inst:
+                if entry_ not in inst_author_names:
+                    inst_author_names.append(entry_)
         
         print(inst_author_names)
         length_inst_auths = len(inst_author_names)
@@ -233,7 +239,8 @@ def researcher(researcher_id):
         "2019": 80.84,
         "2020": 98.41,
         "2021": 109.98,
-        "2022": 74.14
+        "2022": 74.14,
+        "2023": 74.14
     }
 
     average_citations = [average_citations.get(str(y)) for y in all_citation_years]
@@ -545,6 +552,69 @@ def researcher(researcher_id):
     print(f"*********** Load time: {perf_counter() - start_time} *****************")
     return res
 
+@app.route("/download-profile", methods=["POST"])
+def download_profile():
+    if request.method == "POST":
+        data = request.get_json()
+        current_name = data.get('researcher_name')
+        # Create the PDF 
+        WIDTH = 210
+        HEIGHT = 297
+
+        def create_profile_pdf(author_name, current_inst, total_citations, est_location, all_insts, prob_switching, timing):
+            pdf = FPDF(orientation = 'P', unit = 'mm', format='A4')
+            pdf.add_page()
+            # Author name as title
+            pdf.set_font('Helvetica', 'B', 28)
+            pdf.ln(8)
+            pdf.write(10, f'{author_name}')
+
+            pdf.set_font("Helvetica", '', 12)
+            pdf.ln(15)
+            pdf.write(10, f"Current institution: {current_inst}")
+            pdf.ln(8)
+            pdf.write(10, f"Total citation count: {total_citations}")
+            pdf.ln(8)
+            pdf.write(10, f"Estimated location: {est_location}")
+            pdf.ln(8)
+            pdf.write(10, f"Associated institutions: {all_insts}")
+            pdf.ln(20)
+
+            # Prediction score
+            pdf.set_font('Helvetica', 'B', 20)
+            pdf.write(10, "Predictions")
+            pdf.ln(15)
+            pdf.set_font("Helvetica", '', 12)
+            pdf.write(10, f"Probability of switching: {prob_switching}%")
+            pdf.ln(8)
+            pdf.write(10, f"Timing of switching: {timing}")
+            pdf.ln(20)
+
+            # Citations per year
+            pdf.set_text_color(0, 0, 0)
+            pdf.set_font('Helvetica', 'B', 20)
+            pdf.write(10, "Citations per year")
+            pdf.ln(15)
+            pdf.image("chart.png", w=WIDTH/2)
+
+            pdf.output(f'./static/pdfs/{author_name}.pdf', 'F')
+
+        create_profile_pdf(current_name, "Biodesign Institute", 11000, "DE", "Biodesign Institute | Other one", 62, "not soon")
+
+        return jsonify({
+            "message": "success",
+            "pdf_link": f"../static/pdfs/{current_name}.pdf"
+        })
+    else:
+        return jsonify({"message": "error: wrong http method"})
+
+@app.route("/remove-pdf", methods=["POST"])
+def remove_pdf():
+    if request.method == "POST":
+        to_be_removed = request.get_json().get("researcher_name")
+        os.remove(os.path.join(os.curdir, "static", "pdfs", f"{to_be_removed}.pdf"))
+
+        return jsonify({"message": f"removed {to_be_removed}"})
 
 if __name__ == "__main__":
     app.run(debug=True)
