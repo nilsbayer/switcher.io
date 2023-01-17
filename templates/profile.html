@@ -156,10 +156,7 @@
                     <textarea class="email-text" name="" id="email-prepared" cols="90" rows="12">
 Dear Mrs./Mr. {{ personal_info.author_surname }},
 
-I have read your paper on “Transformer models for autonomous driving”.
-Very great work!
-
-We want you in our company!
+I would like to speak to you about our strategy for young talent at our university.y!
 
 Best regards,
 John Doe
@@ -325,10 +322,18 @@ John Doe
                     setTimeout(() => {
                         copy_notification.remove()
                     }, 500)
-                }, 3000)
+                }, 2000)
             })
 
-            let on_tracklist = {{ on_tracklist }}
+            let on_tracklist = {{ on_tracklist }};
+            let current_inst = "{{ personal_info.last_inst }}";
+            let total_cits = {{ personal_info.total_cits }};
+            let estimated_location = "{{ personal_info.author_location }}";
+            let list_institutions = "{{ personal_info.list_institutions }}";
+            let switching_prob= {{ switching_prob }};
+            let soon_var = "{{ soon_var }}";
+            let citations_per_year = {{ all_citation_counts }};
+            let years = {{ all_years_list }};
         </script>
     {% else %}
         <main>
