@@ -17,6 +17,7 @@ import copy
 import pandas as pd
 import itertools
 from fpdf import FPDF
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -588,11 +589,20 @@ def download_profile():
     if request.method == "POST":
         data = request.get_json()
         current_name = data.get('researcher_name')
+        current_inst = data.get('current_inst')
+        total_cits = data.get('total_cits')
+        estimated_location = data.get('estimated_location')
+        list_institutions = data.get('list_institutions')
+        switching_prob = data.get('switching_prob')
+        soon_var = data.get('soon_var')
+        citations_per_year = data.get('citations_per_year')
+        graph_years = data.get('years')
+        current_token = data.get('current_token')
         # Create the PDF 
         WIDTH = 210
         HEIGHT = 297
 
-        def create_profile_pdf(author_name, current_inst, total_citations, est_location, all_insts, prob_switching, timing):
+        def create_profile_pdf(author_name, current_inst, total_citations, est_location, all_insts, prob_switching, timing, years, cits_per_year, current_token):
             pdf = FPDF(orientation = 'P', unit = 'mm', format='A4')
             pdf.add_page()
             # Author name as title
@@ -622,15 +632,21 @@ def download_profile():
             pdf.ln(20)
 
             # Citations per year
+            plt.bar(years, height=cits_per_year, color="#23B08F")
+            plt.savefig(f"./static/pdfs/{author_name}_citations.png")
             pdf.set_text_color(0, 0, 0)
             pdf.set_font('Helvetica', 'B', 20)
             pdf.write(10, "Citations per year")
             pdf.ln(15)
-            pdf.image("chart.png", w=WIDTH/2)
+            pdf.image(f"./static/pdfs/{author_name}_citations.png", w=WIDTH/1.5)
+            
+            pdf.set_font("Helvetica", '', 12)  
+            pdf.cell(0, 0, f"https://switcher.herokuapp.com/profile/{current_token}")
+            pdf.link(0, 0, 100, 10, f"https://switcher.herokuapp.com/profile/{current_token}")
 
             pdf.output(f'./static/pdfs/{author_name}.pdf', 'F')
 
-        create_profile_pdf(current_name, "Biodesign Institute", 11000, "DE", "Biodesign Institute | Other one", 62, "not soon")
+        create_profile_pdf(current_name, current_inst, total_cits, estimated_location, list_institutions, switching_prob, soon_var, graph_years, citations_per_year, current_token)
 
         return jsonify({
             "message": "success",
@@ -644,6 +660,7 @@ def remove_pdf():
     if request.method == "POST":
         to_be_removed = request.get_json().get("researcher_name")
         os.remove(os.path.join(os.curdir, "static", "pdfs", f"{to_be_removed}.pdf"))
+        os.remove(os.path.join(os.curdir, "static", "pdfs", f"{to_be_removed}_citations.png"))
 
         return jsonify({"message": f"removed {to_be_removed}"})
 
