@@ -62,7 +62,6 @@ main {
 
 h1 {
     margin-bottom: 2rem;
-    display: inline-block;
 }
 
 h3 {
@@ -154,6 +153,7 @@ h3 {
 .span-btn {
     display: inline-block;
     line-height: 3rem;
+    text-decoration: none;
 }
 
 .a-btn {
@@ -336,11 +336,22 @@ select:focus {
 #download-btn {
     color: var(--accent-color);
     text-decoration: none;
+    text-align: right;
 }
 
 #download-btn:hover {
     cursor: pointer;
 }
+
+.actions-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.actions-flexed {
+    max-width: 47%;
+}
+
 
 
 /* Adapting for small screens */
