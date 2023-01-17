@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="{{ url_for('static', filename='js/profile_download.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/tracklist.js') }}" defer></script>
 {% endblock title %}
 
 {% block content %}
@@ -130,7 +131,7 @@
                 <div class="actions-container">
                     <div class="actions-flexed">
                         <h3>Get more insights, create a survey</h3>
-                        <div class="shadow-box" style="padding: 2rem; min-height: max-content;">
+                        <div class="shadow-box" style="padding: 2rem; min-height: ;">
                             <p>A survey lets you dive more into detail and gain knowledge on further fatcors, such as happiness at work etc.</p>
                             <a class="primary-btn span-btn" href="#" style="margin: 2rem 0 0 0">Create a survey</a>
                         </div>
@@ -139,7 +140,7 @@
                         <h3>Keep an open eye, expand your tracklist</h3>
                         <div class="shadow-box" style="padding: 2rem; min-height: max-content;">
                             <p>Add this profile to your tracking list and get a notification once our analysis's result changes.</p>
-                            <a class="primary-btn span-btn" href="#" id="add-to-tracklist" style="margin: 2rem 0 0 0">Add to tracklist</a>
+                            <span class="primary-btn span-btn" id="add-to-tracklist" style="margin: 2rem 0 0 0">Add to tracklist</span>
                         </div>
                     </div>
                 </div>
@@ -322,6 +323,8 @@ John Doe
                     }, 500)
                 }, 3000)
             })
+
+            let on_tracklist = {{ on_tracklist }}
         </script>
     {% else %}
         <main>

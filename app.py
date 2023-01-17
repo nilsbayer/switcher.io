@@ -529,9 +529,30 @@ def researcher(researcher_id):
 
     print("PAPER YEAR", all_papers[0].get("year"))
 
+    # Checking whether researcher is on tracklist
+    current_researcher_info = {
+        "token": researcher_id,
+        "name": authors_name
+    }
+    prior_tracking_list = request.cookies.get("tracking_list")
+    print("THIS HERE ****************************", prior_tracking_list)
+    if prior_tracking_list == None:
+        on_tracklist = "false"
+    else:
+        prior_tracking_list = json.loads(prior_tracking_list)
+        if len(prior_tracking_list) == 0:
+            on_tracklist = "false"
+        else:
+            for saved_researcher in prior_tracking_list:
+                saved_token = saved_researcher.get("token")
+                if researcher_id == saved_token:
+                    on_tracklist = "true"
+                else:
+                    on_tracklist = "false"
+
     # print("NODES", nodes)
     # print("EDGES", edges)
-    res = make_response(render_template("profile.html", soon_var=soon_var, prob_circle=prob_circle, switching_prob=switching_prob, node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
+    res = make_response(render_template("profile.html", on_tracklist=on_tracklist, soon_var=soon_var, prob_circle=prob_circle, switching_prob=switching_prob, node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
     this_researcher = {
         "token": researcher_id,
         "name": authors_name,
@@ -615,6 +636,51 @@ def remove_pdf():
         os.remove(os.path.join(os.curdir, "static", "pdfs", f"{to_be_removed}.pdf"))
 
         return jsonify({"message": f"removed {to_be_removed}"})
+
+@app.route("/add-to-tracklist", methods=["POST"])
+def add_to_tracklist():
+    if request.method == "POST":
+        current_researcher = request.get_json().get("researcher")
+        current_researcher_token = request.get_json().get("token")
+
+        res = make_response(jsonify({"message": "success added"}))
+        current_researcher_info = {
+            "token": current_researcher_token,
+            "name": current_researcher
+        }
+        prior_tracking_list = request.cookies.get("tracking_list")
+        if prior_tracking_list == None:
+            prior_tracking_list = []
+        else:
+            prior_tracking_list = json.loads(prior_tracking_list)
+            for saved_researcher in prior_tracking_list:
+                saved_token = saved_researcher.get("token")
+                if current_researcher_token == saved_token:
+                    prior_tracking_list.remove(saved_researcher)
+        prior_tracking_list.append(current_researcher_info)
+        res.set_cookie("tracking_list", json.dumps(prior_tracking_list))
+
+        return res
+
+@app.route("/remove_from_tracklist", methods=["POST"])
+def remove_from_tracklist():
+    if request.method == "POST":
+        current_researcher_token = request.get_json().get("token")
+
+        res = make_response(jsonify({"message": "success removed"}))
+
+        prior_tracking_list = request.cookies.get("tracking_list")
+        if prior_tracking_list == None:
+            pass
+        else:
+            prior_tracking_list = json.loads(prior_tracking_list)
+            for saved_researcher in prior_tracking_list:
+                saved_token = saved_researcher.get("token")
+                if current_researcher_token == saved_token:
+                    prior_tracking_list.remove(saved_researcher)
+                    res.set_cookie("tracking_list", json.dumps(prior_tracking_list))
+        return res
+
 
 if __name__ == "__main__":
     app.run(debug=True)
