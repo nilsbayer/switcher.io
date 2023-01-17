@@ -352,6 +352,14 @@ select:focus {
     max-width: 47%;
 }
 
+.tracklist-heading {
+    padding: 0 16vw 0 0;
+}
+
+.tracklist-heading-empty {
+    padding: 0 0 0 0;
+}
+
 
 
 /* Adapting for small screens */
@@ -461,7 +469,17 @@ select:focus {
         left: 45%;
         display: inline-block;
         margin-top: 2rem;
-        transform: translate(-50%,0));
+        transform: translate(-50%,0);
+    }
+
+    .actions-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+    }
+
+    .actions-flexed {
+        max-width: 100%;
     }
 
 }
@@ -471,6 +489,10 @@ select:focus {
 
     .sidebar {
         width: 5vw;
+    }
+
+    .tracklist-heading {
+        padding: 0 25vw 0 0;
     }
 
 }
