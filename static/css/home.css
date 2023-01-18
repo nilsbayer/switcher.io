@@ -360,6 +360,20 @@ select:focus {
     padding: 0 0 0 0;
 }
 
+.network-tab {
+    padding: 1rem 1rem .5rem 1rem;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0px -12px 15px rgba(0, 0, 0, 0.05);
+    background-color: white;
+}
+
+.network-tab:hover {
+    cursor: pointer;
+}
+
+.network-tab:first-of-type {
+    color: var(--accent-color);
+}
 
 
 /* Adapting for small screens */

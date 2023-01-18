@@ -74,7 +74,10 @@
             </div>
 
             <div class="box">
-                <h3>Network of {{personal_info.author_name}}</h3>
+                <h3 style="margin-bottom: 3rem;">Network of {{personal_info.author_name}}</h3>
+                <span class="network-tab" id="general_tab">General</span>
+                <span class="network-tab" id="prob_tab">Probability</span>
+                <span class="network-tab" id="col_tab">Recent collaboration</span>
                 <div class="shadow-box">
                     <div class="network-container">
                         <div id="mynetwork" class="card-body"></div>
@@ -224,6 +227,7 @@ John Doe
             // initialize global variables.
             const node_list = {{ node_list|safe }}
             const edge_list = {{ edge_list|safe }}
+            const new_nodes = [{"color": "#23B08F", "id": "A2102965651", "label": "Fisher Yu", "shape": "square", "size": 10}, {"color": "#990000", "id": "A3215289805", "label": "Jiashi Feng", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A3206266945", "label": "Yang Gao", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A3043071695", "label": "Varun Agrawal", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A3015769185", "label": "Haofeng Chen", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2969332786", "label": "Wenqi Xian", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2902866982", "label": "Fangchen Liu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2902440875", "label": "Bingyi Kang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2891126297", "label": "Zi-Yi Dou", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2800964704", "label": "Yingying Chen", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2798407434", "label": "Amit Raj", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2778599308", "label": "Vashisht Madhavan", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2658800667", "label": "Xin Wang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2650877479", "label": "Jingwan Lu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2566736780", "label": "Zhuang Liu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2514427603", "label": "Andy Zeng", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2483816572", "label": "Patsorn Sangkloy", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2396181419", "label": "Jianxiong Xiao", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2304177752", "label": "Linguang Zhang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2252171364", "label": "Joseph E. Gonzalez", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2223720701", "label": "Huazhe Xu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2174985400", "label": "Trevor Darrell", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2166284823", "label": "Xiaoou Tang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2161412237", "label": "James Hays", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2138701653", "label": "Zhirong Wu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2136189631", "label": "Thomas Funkhouser", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2114560125", "label": "Chen Fang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2111957820", "label": "Angel X. Chang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2095742376", "label": "Shuran Song", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2011491954", "label": "Aditya Khosla", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A1951833338", "label": "Manolis Savva", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A1809196549", "label": "Vladlen Koltun", "shape": "dot", "size": 10}]
             var edges;
             var nodes;
             var allNodes;
@@ -239,7 +243,7 @@ John Doe
                 value : []
             };
             // This method is responsible for drawing the graph, returns the drawn network
-            function drawGraph() {
+            function drawGraph(node_list, edge_list) {
                 var container = document.getElementById('mynetwork');
                 // parsing and collecting nodes and edges from the python
                 nodes = new vis.DataSet(node_list); 
@@ -286,8 +290,32 @@ John Doe
                 network = new vis.Network(container, data, options);
                 return network;
             }
-            drawGraph();
+            drawGraph(node_list, edge_list);
 
+            // Change network tabs
+            const network_tabs = document.querySelectorAll(".network-tab")
+            network_tabs.forEach(network_tab => {
+                network_tab.addEventListener("click", () => {
+
+                    network_tabs.forEach(this_tab => {
+                        this_tab.style.color = "#000000"
+                    })
+                    network_tab.style.color = "#23B08F"
+                    // Check which tab was pressed
+                    if (network_tab.id == "general_tab") {
+                        drawGraph(node_list, edge_list)
+                    }
+                    else if (network_tab.id == "prob_tab") {
+                        drawGraph(new_nodes, edge_list)
+                    }
+                    else if (network_tab.id == "col_tab") {
+                        drawGraph(node_list, edge_list)
+                    }
+
+                })
+            })
+            
+            // Copy email part
             function clearSelection() {
                 if (window.getSelection) {window.getSelection().removeAllRanges();}
                 else if (document.selection) {document.selection.empty();}
