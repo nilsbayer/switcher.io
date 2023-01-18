@@ -226,6 +226,7 @@ def researcher(researcher_id):
     authors_surname = authors_name.split(" ")[-1]
     all_citations = list(reversed([work.get("cited_by_count") for work in r.json().get("counts_by_year")]))
     all_citation_years = list(reversed([work.get("year") for work in r.json().get("counts_by_year")]))
+    total_amount_citations = r.json().get("cited_by_count")
 
     average_citations = {
         "2000": 0,
@@ -273,24 +274,24 @@ def researcher(researcher_id):
 
     num_papers = len(all_papers)
 
-    researcher_data = papers_col.find({
-        "author_id": full_query_str
-    }).sort("year", 1)
-    # Get number of citations
-    citation_data = [paper["citations"] for paper in researcher_data]
-    citation_counts = []
-    all_years_list = []
-    for paper_entry in citation_data:
-        num_citations_paper = (year_entry["cited_by_count"] for year_entry in paper_entry)
-        citation_this_paper = sum(num_citations_paper)
-        citation_counts.append(citation_this_paper)
-        for year_entry in paper_entry:
-            all_years_list.append(year_entry["year"])
+    # researcher_data = papers_col.find({
+    #     "author_id": full_query_str
+    # }).sort("year", 1)
+    # # Get number of citations
+    # citation_data = [paper["citations"] for paper in researcher_data]
+    # citation_counts = []
+    # all_years_list = []
+    # for paper_entry in citation_data:
+    #     num_citations_paper = (year_entry["cited_by_count"] for year_entry in paper_entry)
+    #     citation_this_paper = sum(num_citations_paper)
+    #     citation_counts.append(citation_this_paper)
+    #     for year_entry in paper_entry:
+    #         all_years_list.append(year_entry["year"])
 
-    #  List of years for x axis
-    all_years_list = set(all_years_list)
-    all_years_list = list(all_years_list)
-    all_years_list.sort()
+    # #  List of years for x axis
+    # all_years_list = set(all_years_list)
+    # all_years_list = list(all_years_list)
+    # all_years_list.sort()
 
 
     # Get list of institutions 
@@ -338,7 +339,8 @@ def researcher(researcher_id):
         "list_institutions": list_institutions,
         "last_inst": last_inst_of_author,
         "author_location": current_country,
-        "total_cits": sum(citation_counts),
+        # "total_cits": sum(citation_counts),
+        "total_cits": total_amount_citations,
         "drop_out_year": drop_out_year
     }
 
