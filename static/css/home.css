@@ -365,10 +365,12 @@ select:focus {
     border-radius: 10px 10px 0 0;
     box-shadow: 0px -12px 15px rgba(0, 0, 0, 0.05);
     background-color: white;
+    transition: padding .2s ease-out;
 }
 
 .network-tab:hover {
     cursor: pointer;
+    padding: 1.5rem 1rem .5rem 1rem;
 }
 
 .network-tab:first-of-type {
