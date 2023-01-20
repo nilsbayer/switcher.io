@@ -727,25 +727,25 @@ def fetch_network():
 
         def pick_node_color(prob_score):
             if prob_score <= 10:
-                color = "#EFDFDF"
+                color = "#F3E6DA"
             elif prob_score <= 20 and prob_score > 10:
-                color = "#E5C6C6"
+                color = "#F9DDC4"
             elif prob_score <= 30 and prob_score > 20:
-                color = "#D7A4A4"
+                color = "#F4CAA2"
             elif prob_score <= 40 and prob_score > 30:
-                color = "#CA9090"
+                color = "#EFB987"
             elif prob_score <= 50 and prob_score > 40:
-                color = "#C88484"
+                color = "#E9A76A"
             elif prob_score <= 60 and prob_score > 50:
-                color = "#B96060"
+                color = "#EB9D55"
             elif prob_score <= 70 and prob_score > 60:
-                color = "#B95050"
+                color = "#E1934A"
             elif prob_score <= 80 and prob_score > 70:
-                color = "#B03D3D"
+                color = "#DB883B"
             elif prob_score <= 90 and prob_score > 80:
-                color = "#A42C2C"
+                color = "#EE821F"
             elif prob_score <= 100 and prob_score > 90:
-                color = "#A30101"
+                color = "#E56E00"
 
             return color
 
@@ -753,21 +753,21 @@ def fetch_network():
         del requested_authors[0]
         
         for requested_author in requested_authors:
-            try:
-                author = predictions_col.find({
-                    "author_id": requested_author
-                })
-                color = pick_node_color(author[0].get("prediction"))
-                new_node = {
-                    "color": color,
-                    "id": requested_author,
-                    "label": author[0].get("author_name"),
-                    "shape": "dot",
-                    "size": 10
-                }
-                new_nodes.append(new_node)
-            except:
-                print(f"This author is not given: {requested_author}")
+            # try:
+            author = predictions_col.find({
+                "author_id": requested_author
+            })
+            color = pick_node_color(author[0].get("prediction"))
+            new_node = {
+                "color": color,
+                "id": requested_author,
+                "label": author[0].get("author_name"),
+                "shape": "dot",
+                "size": 10
+            }
+            new_nodes.append(new_node)
+            # except:
+            #     print(f"This author is not given: {requested_author}")
 
         new_nodes_static = [{"color": "#23B08F", "id": "A2102965651", "label": "Fisher Yu", "shape": "square", "size": 10}, {"color": "#990000", "id": "A3215289805", "label": "Jiashi Feng", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A3206266945", "label": "Yang Gao", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A3043071695", "label": "Varun Agrawal", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A3015769185", "label": "Haofeng Chen", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2969332786", "label": "Wenqi Xian", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2902866982", "label": "Fangchen Liu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2902440875", "label": "Bingyi Kang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2891126297", "label": "Zi-Yi Dou", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2800964704", "label": "Yingying Chen", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2798407434", "label": "Amit Raj", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2778599308", "label": "Vashisht Madhavan", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2658800667", "label": "Xin Wang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2650877479", "label": "Jingwan Lu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2566736780", "label": "Zhuang Liu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2514427603", "label": "Andy Zeng", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2483816572", "label": "Patsorn Sangkloy", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2396181419", "label": "Jianxiong Xiao", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2304177752", "label": "Linguang Zhang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2252171364", "label": "Joseph E. Gonzalez", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2223720701", "label": "Huazhe Xu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2174985400", "label": "Trevor Darrell", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2166284823", "label": "Xiaoou Tang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2161412237", "label": "James Hays", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2138701653", "label": "Zhirong Wu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2136189631", "label": "Thomas Funkhouser", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2114560125", "label": "Chen Fang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2111957820", "label": "Angel X. Chang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2095742376", "label": "Shuran Song", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2011491954", "label": "Aditya Khosla", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A1951833338", "label": "Manolis Savva", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A1809196549", "label": "Vladlen Koltun", "shape": "dot", "size": 10}]
 

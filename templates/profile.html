@@ -83,7 +83,8 @@
                     <div class="network-container">
                         <div id="mynetwork" class="card-body"></div>
                         <div>
-                            <span>Number of coauthors: {{ length_coauthor }}</span>
+                            <span style="padding: .5rem 0 1rem 0;">Number of coauthors: {{ length_coauthor }}</span>
+                            <div id="legend" style="display: inline-block;margin-left: 4rem;padding: .5rem 0 1rem 0;"><div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Company</span><div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Public sector</span></div>
                         </div>
                     </div>
                 </div>
@@ -304,9 +305,12 @@ John Doe
                     network_tab.style.color = "#23B08F"
                     // Check which tab was pressed
                     if (network_tab.id == "general_tab") {
+                        document.getElementById("legend").innerHTML = '<div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Company</span><div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Public sector</span>'
                         drawGraph(node_list, edge_list)
                     }
                     else if (network_tab.id == "prob_tab") {
+                        // Change the legend
+                        document.getElementById("legend").innerHTML = "<span style='padding: 0 .5rem'>100%</span><div style='border-radius: 5px;display:inline-block;width:8rem; height:1rem;background: linear-gradient(90deg, #E56E00 0%, rgba(229, 110, 0, 0.1) 100%);'></div><span style='padding: 0 .5rem'>0%</span>"
                         drawGraph(new_nodes, edge_list)
                     }
                     else if (network_tab.id == "col_tab") {
