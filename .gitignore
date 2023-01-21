@@ -16,3 +16,4 @@ test_download.html
 chart.png
 sort_json.py
 prediction_data.py
+test_rec_collaboration.py

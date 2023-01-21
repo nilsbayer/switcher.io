@@ -716,6 +716,30 @@ def remove_from_tracklist():
                     res.set_cookie("tracking_list", json.dumps(prior_tracking_list))
         return res
 
+def pick_node_color(prob_score):
+    if prob_score <= 10:
+        color = "#F3E6DA"
+    elif prob_score <= 20 and prob_score > 10:
+        color = "#F9DDC4"
+    elif prob_score <= 30 and prob_score > 20:
+        color = "#F4CAA2"
+    elif prob_score <= 40 and prob_score > 30:
+        color = "#EFB987"
+    elif prob_score <= 50 and prob_score > 40:
+        color = "#E9A76A"
+    elif prob_score <= 60 and prob_score > 50:
+        color = "#EB9D55"
+    elif prob_score <= 70 and prob_score > 60:
+        color = "#E1934A"
+    elif prob_score <= 80 and prob_score > 70:
+        color = "#DB883B"
+    elif prob_score <= 90 and prob_score > 80:
+        color = "#EE821F"
+    elif prob_score <= 100 and prob_score > 90:
+        color = "#E56E00"
+
+    return color
+
 @app.route("/fetch-network", methods=["POST"])
 def fetch_network():
     if request.method == "POST":
@@ -724,30 +748,6 @@ def fetch_network():
         profile_node = sent_nodes[0]
         new_nodes = []
         new_nodes.append(profile_node)
-
-        def pick_node_color(prob_score):
-            if prob_score <= 10:
-                color = "#F3E6DA"
-            elif prob_score <= 20 and prob_score > 10:
-                color = "#F9DDC4"
-            elif prob_score <= 30 and prob_score > 20:
-                color = "#F4CAA2"
-            elif prob_score <= 40 and prob_score > 30:
-                color = "#EFB987"
-            elif prob_score <= 50 and prob_score > 40:
-                color = "#E9A76A"
-            elif prob_score <= 60 and prob_score > 50:
-                color = "#EB9D55"
-            elif prob_score <= 70 and prob_score > 60:
-                color = "#E1934A"
-            elif prob_score <= 80 and prob_score > 70:
-                color = "#DB883B"
-            elif prob_score <= 90 and prob_score > 80:
-                color = "#EE821F"
-            elif prob_score <= 100 and prob_score > 90:
-                color = "#E56E00"
-
-            return color
 
         requested_authors = [node.get("id") for node in sent_nodes]
         del requested_authors[0]
@@ -772,6 +772,84 @@ def fetch_network():
         new_nodes_static = [{"color": "#23B08F", "id": "A2102965651", "label": "Fisher Yu", "shape": "square", "size": 10}, {"color": "#990000", "id": "A3215289805", "label": "Jiashi Feng", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A3206266945", "label": "Yang Gao", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A3043071695", "label": "Varun Agrawal", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A3015769185", "label": "Haofeng Chen", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2969332786", "label": "Wenqi Xian", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2902866982", "label": "Fangchen Liu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2902440875", "label": "Bingyi Kang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2891126297", "label": "Zi-Yi Dou", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2800964704", "label": "Yingying Chen", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2798407434", "label": "Amit Raj", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2778599308", "label": "Vashisht Madhavan", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2658800667", "label": "Xin Wang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2650877479", "label": "Jingwan Lu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2566736780", "label": "Zhuang Liu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2514427603", "label": "Andy Zeng", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2483816572", "label": "Patsorn Sangkloy", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2396181419", "label": "Jianxiong Xiao", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2304177752", "label": "Linguang Zhang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2252171364", "label": "Joseph E. Gonzalez", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2223720701", "label": "Huazhe Xu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2174985400", "label": "Trevor Darrell", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2166284823", "label": "Xiaoou Tang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2161412237", "label": "James Hays", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2138701653", "label": "Zhirong Wu", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2136189631", "label": "Thomas Funkhouser", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2114560125", "label": "Chen Fang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2111957820", "label": "Angel X. Chang", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2095742376", "label": "Shuran Song", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A2011491954", "label": "Aditya Khosla", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A1951833338", "label": "Manolis Savva", "shape": "dot", "size": 10}, {"color": "#990000", "id": "A1809196549", "label": "Vladlen Koltun", "shape": "dot", "size": 10}]
 
         return jsonify({"sent_data": new_nodes})
+
+@app.route("/fetch-network-collaboration", methods=["POST"])
+def fetch_col_network():
+    if request.method == "POST":
+        sent_nodes = request.get_json().get("current_nodes")
+
+        # Get profile node
+        profile_node = sent_nodes[0]
+
+        # Create list of dicts for coauthors
+        requested_authors = [{"link": f"https://openalex.org/{node.get('id')}", "name": node.get("label")} for node in sent_nodes]
+        del requested_authors[0]
+
+        # Look up all paper ids of the profile author
+        current_authors_papers = papers_col.distinct("paper_id", {
+            "author_id": f'https://openalex.org/{profile_node.get("id")}'
+        })
+        current_authors_papers = [paper for paper in current_authors_papers]
+
+        all_last_cols = []
+        coauthors_processed = []
+
+        for coauthor in requested_authors:
+            entries = papers_col.find({
+                "author_id": coauthor.get("link")
+            }).sort("year", -1)
+
+            papers_and_years = []
+            for entry in entries:
+                _ = {
+                    "paper": entry.get("paper_id"),
+                    "year": int(entry.get("year")[:4])
+                }
+                papers_and_years.append(_)
+
+            years_of_collaboration = []
+            for entry in papers_and_years:
+                if entry.get("paper") in current_authors_papers:
+                    years_of_collaboration.append(entry.get("year"))
+
+            last_colla = max(years_of_collaboration)
+            all_last_cols.append(last_colla)
+            _ = {
+                "label": coauthor.get("name"),
+                "id": coauthor.get("link").replace("https://openalex.org/", ""),
+                "last_year_col": last_colla,
+                "shape": "dot",
+                "size": 10
+            }
+            coauthors_processed.append(_)
+
+        latest_year = max(all_last_cols)
+        earliest_year = min(all_last_cols)
+
+        year_difference = latest_year - earliest_year
+
+        # Calculating the percentage and adding the color
+        for coauthor in coauthors_processed:
+            current_difference = coauthor.get("last_year_col") - earliest_year
+            perc_for_color = (current_difference / year_difference) * 100
+            color = pick_node_color(perc_for_color)
+
+            coauthor.update({
+                "color": color
+            })
+            del coauthor["last_year_col"]
+
+        coauthors_processed.append(profile_node)
+
+        print("**************************************")
+        print(coauthors_processed)
+
+        return jsonify({
+            "sent_data": coauthors_processed,
+            "max_year": latest_year,
+            "min_year": earliest_year
+        })
+
 
 if __name__ == "__main__":
     app.run(debug=True)
