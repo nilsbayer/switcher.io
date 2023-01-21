@@ -230,6 +230,9 @@ John Doe
             const node_list = {{ node_list|safe }}
             const edge_list = {{ edge_list|safe }}
             var new_nodes;
+            var col_nodes;
+            var latest_year = "Most recent";
+            var earliest_year = "Least recent";
             var edges;
             var nodes;
             var allNodes;
@@ -314,7 +317,8 @@ John Doe
                         drawGraph(new_nodes, edge_list)
                     }
                     else if (network_tab.id == "col_tab") {
-                        drawGraph(node_list, edge_list)
+                        document.getElementById("legend").innerHTML = `<span style='padding: 0 .5rem'>${latest_year}</span><div style='border-radius: 5px;display:inline-block;width:8rem; height:1rem;background: linear-gradient(90deg, #E56E00 0%, rgba(229, 110, 0, 0.1) 100%);'></div><span style='padding: 0 .5rem'>${earliest_year}</span>`
+                        drawGraph(col_nodes, edge_list)
                     }
 
                 })
