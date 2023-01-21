@@ -855,20 +855,29 @@ def fetch_col_network():
         year_difference = latest_year - earliest_year
 
         # Calculating the percentage and adding the color
-        for coauthor in coauthors_processed:
-            current_difference = coauthor.get("last_year_col") - earliest_year
-            perc_for_color = (current_difference / year_difference) * 100
-            color = pick_node_color(perc_for_color)
+        if year_difference > 0:
+            for coauthor in coauthors_processed:
+                current_difference = coauthor.get("last_year_col") - earliest_year
+                perc_for_color = (current_difference / year_difference) * 100
+                color = pick_node_color(perc_for_color)
 
-            coauthor.update({
-                "color": color
-            })
-            del coauthor["last_year_col"]
+                coauthor.update({
+                    "color": color
+                })
+                del coauthor["last_year_col"]
 
-        coauthors_processed.append(profile_node)
+            coauthors_processed.append(profile_node)
+        else:
+            for coauthor in coauthors_processed:
+                coauthor.update({
+                    "color": "#E56E00"
+                })
+                del coauthor["last_year_col"]
+
+            coauthors_processed.append(profile_node)
 
         print("**************************************")
-        print(coauthors_processed)
+        # print(coauthors_processed)
 
         return jsonify({
             "sent_data": coauthors_processed,
