@@ -119,84 +119,110 @@ def search():
         len_dropouts = len(dropouts_numbers)
 
         # Get researchers at institution
-        this_inst_authors_entries = papers_col.find({
+        start_time_database_one = perf_counter()
+        this_inst_authors_entries = papers_col.distinct("author_id", {
             "institution_name": chosen_inst,
             "dropout_year": {"$exists": False}
         })
+        chosen_authors = [author.replace("https://openalex.org/", "") for author in this_inst_authors_entries]
+        print(f"Loading time first database: {perf_counter() - start_time_database_one}")
 
-        inst_author_names = []
-        for entry in this_inst_authors_entries:
-            if entry.get("data_for_pred") == None:
-                pred_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-            elif entry.get("data_for_pred") != None:
-                pred_data = entry.get("data_for_pred")
-            entry_ = {
-                "author_id": entry["author_id"].replace("https://openalex.org/", ""),
-                "author_name": entry["author_name"],
-                "pred_data": pred_data
+        start_time_database_two = perf_counter()
+        authors_zip = []
+        for author in chosen_authors:
+            this_author = predictions_col.find({
+                "author_id": author
+            })
+            _ = {
+                "author_name": this_author[0].get("author_name"),
+                "prediction": this_author[0].get("prediction"),
+                "author_id": author,
             }
+            authors_zip.append(_)
 
-            author_last_entry = papers_col.find({
-                "author_id": entry["author_id"]
-            }).sort("year", -1)
-            if author_last_entry[0].get("institution_name") == chosen_inst:
-                if entry_ not in inst_author_names:
-                    inst_author_names.append(entry_)
-        
-        print(inst_author_names)
-        length_inst_auths = len(inst_author_names)
+        authors_zip = sorted(authors_zip, key=lambda d: d.get("prediction"), reverse=True)
+        print(f"Loading time database 2: {perf_counter() - start_time_database_two}")
 
-        # inst_authors = list(set([auth["author_id"].replace("https://openalex.org/", "") for auth in this_inst_authors_entries]))
-        # length_inst_auths = len(inst_authors)
-
-        # async def main(coauthors):
-        #     author_names = await asyncio.gather(*[get_coauthor_names_and_link(coauthor) for coauthor in coauthors])
-        #     return author_names
+        # Old part, asyncronous
+        # this_inst_authors_entries = papers_col.find({
+        #     "institution_name": chosen_inst,
+        #     "dropout_year": {"$exists": False}
+        # })
 
         # inst_author_names = []
-        # if length_inst_auths > 6:
-        #     for i in range(math.ceil(length_inst_auths / 6)):
-        #         print(f"Round: {i}")
-        #         current_coauthor_list = inst_authors[:6]
-        #         del inst_authors[:6]
-        #         inst_author_names_part = asyncio.run(main(current_coauthor_list))
-        #         for auth_item in inst_author_names_part: inst_author_names.append(auth_item)
-        #         time.sleep(2)
-        # else:
-        #     inst_author_names = asyncio.run(main(inst_authors))
+        # for entry in this_inst_authors_entries:
+        #     if entry.get("data_for_pred") == None:
+        #         pred_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        #     elif entry.get("data_for_pred") != None:
+        #         pred_data = entry.get("data_for_pred")
+        #     entry_ = {
+        #         "author_id": entry["author_id"].replace("https://openalex.org/", ""),
+        #         "author_name": entry["author_name"],
+        #         "pred_data": pred_data
+        #     }
 
+        #     author_last_entry = papers_col.find({
+        #         "author_id": entry["author_id"]
+        #     }).sort("year", -1)
+        #     if author_last_entry[0].get("institution_name") == chosen_inst:
+        #         if entry_ not in inst_author_names:
+        #             inst_author_names.append(entry_)
+        
+        # print(inst_author_names)
+        # length_inst_auths = len(inst_author_names)
 
+        # ALREADY COMMENTED OUT
+        # # inst_authors = list(set([auth["author_id"].replace("https://openalex.org/", "") for auth in this_inst_authors_entries]))
+        # # length_inst_auths = len(inst_authors)
+
+        # # async def main(coauthors):
+        # #     author_names = await asyncio.gather(*[get_coauthor_names_and_link(coauthor) for coauthor in coauthors])
+        # #     return author_names
+
+        # # inst_author_names = []
+        # # if length_inst_auths > 6:
+        # #     for i in range(math.ceil(length_inst_auths / 6)):
+        # #         print(f"Round: {i}")
+        # #         current_coauthor_list = inst_authors[:6]
+        # #         del inst_authors[:6]
+        # #         inst_author_names_part = asyncio.run(main(current_coauthor_list))
+        # #         for auth_item in inst_author_names_part: inst_author_names.append(auth_item)
+        # #         time.sleep(2)
+        # # else:
+        # #     inst_author_names = asyncio.run(main(inst_authors))
+
+        # PREVIOUSLY NOT COMMENTED OUT
         # add machine learning model here
-        model = pickle.load(open('final_model.pkl', 'rb'))
+        # model = pickle.load(open('final_model.pkl', 'rb'))
 
-        def make_prediction(auth_vals):
-            auth_vals = np.array([auth_vals])
-            print("AUTH_VALS", auth_vals)
-            y_pred = model.predict_proba(auth_vals)
-            pred = y_pred[:, 1][0] * 100
+        # def make_prediction(auth_vals):
+        #     auth_vals = np.array([auth_vals])
+        #     print("AUTH_VALS", auth_vals)
+        #     y_pred = model.predict_proba(auth_vals)
+        #     pred = y_pred[:, 1][0] * 100
             
-            return pred
+        #     return pred
 
-        async def asyncr_prediction(auth_vals):
-            return await asyncio.to_thread(make_prediction, auth_vals)
+        # async def asyncr_prediction(auth_vals):
+        #     return await asyncio.to_thread(make_prediction, auth_vals)
 
-        async def get_author_pred(auth_to_pred):
-            author_pred = await asyncr_prediction(auth_to_pred)
-            return author_pred
+        # async def get_author_pred(auth_to_pred):
+        #     author_pred = await asyncr_prediction(auth_to_pred)
+        #     return author_pred
 
-        async def main(auths_to_pred):
-            author_preds = await asyncio.gather(*[get_author_pred(auth_to_pred.get("pred_data")) for auth_to_pred in auths_to_pred])
-            return author_preds
+        # async def main(auths_to_pred):
+        #     author_preds = await asyncio.gather(*[get_author_pred(auth_to_pred.get("pred_data")) for auth_to_pred in auths_to_pred])
+        #     return author_preds
 
-        # df = pd.read_csv("x.csv")
-        # for auth in inst_author_names:
-            # authors_pred_vals = df[df["author_id"] == auth.get("author_id")].iloc[:1, 2:]
-        #     auth.update({"pred_data": authors_pred_vals})
+        # # # df = pd.read_csv("x.csv")
+        # # # for auth in inst_author_names:
+        # #     # authors_pred_vals = df[df["author_id"] == auth.get("author_id")].iloc[:1, 2:]
+        # # #     auth.update({"pred_data": authors_pred_vals})
 
-        author_predictions = asyncio.run(main(inst_author_names))
-        authors_zip = list(zip(inst_author_names, author_predictions))
-        authors_zip = sorted(authors_zip, key=lambda d: d[1], reverse=True) 
-        print(authors_zip)
+        # author_predictions = asyncio.run(main(inst_author_names))
+        # authors_zip = list(zip(inst_author_names, author_predictions))
+        # authors_zip = sorted(authors_zip, key=lambda d: d[1], reverse=True) 
+        # print(authors_zip)
 
         res = make_response(render_template("search.html", len_dropouts=len_dropouts, search_results=authors_zip, form=form, dropout_numbers=dropouts_numbers, dropout_years=json.dumps(dropouts_years)))
         if len(dropouts_years) > 0:
@@ -204,7 +230,7 @@ def search():
             res.set_cookie("last_inst_numbers", json.dumps(dropouts_numbers))
             res.set_cookie("last_inst_name", chosen_inst)
 
-        print(f"Loading time: {perf_counter() - start_time}")
+        print(f"Loading time search page: {perf_counter() - start_time}")
         return res
 
     else:
