@@ -567,10 +567,13 @@ def researcher(researcher_id):
     years_from_first_paper = years_from_first_paper[0]
     if years_from_first_paper < 4:
         soon_var = "very soon"
+        soon_var_tooltip = "Very soon: the resaercher will probably switch to a company in less than 4 years from now."
     elif years_from_first_paper >= 4 and years_from_first_paper < 7:
         soon_var = "soon"
+        soon_var_tooltip = "Soon: the resaercher will probably switch to a company in more than 4, but less than 7 years from now."
     elif years_from_first_paper >= 7:
         soon_var = "not soon"
+        soon_var_tooltip = "Not soon: the resaercher will probably switch to a company in more than 7 years from now."
 
     print("PAPER YEAR", all_papers[0].get("year"))
 
@@ -597,7 +600,7 @@ def researcher(researcher_id):
 
     # print("NODES", nodes)
     # print("EDGES", edges)
-    res = make_response(render_template("profile.html", on_tracklist=on_tracklist, soon_var=soon_var, prob_circle=prob_circle, switching_prob=switching_prob, node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
+    res = make_response(render_template("profile.html", on_tracklist=on_tracklist, soon_var=soon_var, soon_var_tooltip=soon_var_tooltip, prob_circle=prob_circle, switching_prob=switching_prob, node_list=json.dumps(nodes), edge_list=json.dumps(edges), length_coauthor=length_coauthor, profile_exists=True, num_papers=num_papers, all_papers=all_papers, personal_info=personal_stats, all_citation_counts=all_citations, all_years_list=all_citation_years, average_citations=average_citations))
     this_researcher = {
         "token": researcher_id,
         "name": authors_name,

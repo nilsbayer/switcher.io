@@ -377,6 +377,43 @@ select:focus {
     color: var(--accent-color);
 }
 
+.info-circle {
+    font-weight: bolder;
+    color:white;
+    display: inline-block;
+    padding: .25rem .75rem;
+    background-color: #c4c4c4;
+    border-radius: 50%;
+    position: relative;
+    transition: background-color .1s linear;
+}
+
+.info-circle:hover {
+    cursor: help;
+    background-color: darkgrey;
+}
+
+.info-circle::before {
+    --scale: 0;
+    content: attr(data-info-text);
+    --tooltip-color: rgb(0, 0, 0, 0.6);
+    bottom: 3rem;
+    position: absolute;
+    width:max-content;
+    max-width: 20rem;
+    left:-50%;
+    transform: translateX(-40%) scale(var(--scale));
+    font-weight: normal;
+    border-radius: 10px;
+    padding: .5rem;
+    background-color: var(--tooltip-color);
+    transform-origin: bottom;
+}
+
+.info-circle:hover::before {
+    --scale: 1;
+}
+
 
 /* Adapting for small screens */
 
