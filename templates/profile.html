@@ -85,7 +85,7 @@
                         <div id="mynetwork" class="card-body"></div>
                         <div>
                             <span style="padding: .5rem 0 1rem 0;">Number of coauthors: {{ length_coauthor }}</span>
-                            <div id="legend" style="display: inline-block;margin-left: 4rem;padding: .5rem 0 1rem 0;"><div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Company</span><div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Public sector</span></div>
+                            <div id="legend" style="display: inline-block;margin-left: 4rem;padding: .5rem 0 1rem 0;"></div>
                         </div>
                     </div>
                 </div>
@@ -309,7 +309,8 @@ John Doe
                     network_tab.style.color = "#23B08F"
                     // Check which tab was pressed
                     if (network_tab.id == "general_tab") {
-                        document.getElementById("legend").innerHTML = '<div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Company</span><div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Public sector</span>'
+                        // document.getElementById("legend").innerHTML = '<div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Company</span><div style="border-radius: 50%;display:inline-block;width:1rem; height:1rem;background: #c4c4c4;"></div><span style="padding: 0 .5rem">Public sector</span>'
+                        document.getElementById("legend").innerHTML = ''
                         drawGraph(node_list, edge_list)
                     }
                     else if (network_tab.id == "prob_tab") {
